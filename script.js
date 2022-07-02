@@ -26,3 +26,11 @@ function show(shown, hidden) {
   document.getElementById(shown).style.display="block";
   document.getElementById(hidden).style.display="none";
 }
+
+
+function rotateName(orient) {
+    if(orient == "up")
+        document.getElementById("name").style.webkitTransform = "rotate(0deg)";
+    else if(orient == "down")
+        document.getElementById("name").style.webkitTransform = "rotate(-180deg)";
+}

@@ -1,37 +1,61 @@
 @font-face { font-family: Engschrift; src: url('Engschrift.otf'); }
 
 body, html {
-    height: 100%;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     background: whitesmoke;
     color: black;
     overflow-x: hidden;
-    width: 100%;
-    height: 100%;
+    width: 99.5%;
+    height: 99%;
 }
 
 ::-webkit-scrollbar {
     display: none;
 }
 
-.logos{
-    float: right; 
-    margin-right: 5%;
-    padding: 5%;
+ /* unvisited link */
+a:link {
+    color: black;
 }
-.logos img:hover {
+/* visited link */
+a:visited {
+    color: black;
+}
+/* mouse over link */
+a:hover {
+    color: darkred;
+}
+/* selected link */
+a:active {
+    color: darkred;
+}
+
+.logos{
+    border: 5px solid black;
+    padding: 1%;
+    text-align: center;
+}
+
+img:hover {
     -webkit-transform: scale(1.1,1.1);
+    color: darkred;
+}
+
+#git{
+    float: left;
+}
+#mail{
+    float: center;
+}
+#linkedin{
+    float: right;
 }
 
 #name {    
-    font-size: 40px;
-    padding: 2%;
-    float: left; 
+    font-size: 100px;
+    padding: 5%;
 }
 
-#about{
-   
-}
 
 .border {
     border: 5px solid black;
@@ -44,9 +68,15 @@ body, html {
     margin-top: 5%;
 }
 
-#topics{
-    margin-top: 25%;
+#about{
+    margin-top: -10%;
     margin-left: 10%;
+    width: 50%;
+}
+
+#topics{
+    margin-left: 10%;
+    margin-top: 5%;
 }
 
 .title {
