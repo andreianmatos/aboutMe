@@ -1,32 +1,11 @@
-// before 
 
-function start() {
-    if (sessionStorage.length != 0) {
-        document.getElementById("topnavbar").style.visibility = sessionStorage.getItem('topbarvisibility');
-        if(sessionStorage.getItem('topbarvisibility') == "visible") 
-            document.getElementById("menuicon").classList.toggle("change");
-    }
-}   
-
-// other functions 
-
-function displayMenu(x) {
-     x.classList.toggle("change");
-    if(document.getElementById("topnavbar").style.visibility == "hidden") {
-        document.getElementById("topnavbar").style.visibility = "visible";
-        sessionStorage.setItem('topbarvisibility', "visible");
-    }
-    else{
-        document.getElementById("topnavbar").style.visibility = "hidden";
-        sessionStorage.setItem('topbarvisibility', "hidden");
-    }
-}
+var xCoord;
+var yCoord;
 
 function show(shown, hidden) {
   document.getElementById(shown).style.display="block";
   document.getElementById(hidden).style.display="none";
 }
-
 
 function rotateName(orient) {
     if(orient == "up")
@@ -34,3 +13,16 @@ function rotateName(orient) {
     else if(orient == "down")
         document.getElementById("name").style.webkitTransform = "rotate(-180deg)";
 }
+
+setInterval(function changeFontSize() {
+    var previousGrad =  document.body.style.background.substring(44,47);
+    console.log(previousGrad);
+    previousGrad.replace("%)","");
+    console.log(previousGrad);
+    document.body.style.background = "linear-gradient(to top, whitesmoke 0%, gray " +  parseInt(previousGrad) + parseInt(yCoord) + "%)";
+}, 1);
+
+function coordinate(event) {
+    xCoord = event.clientX;
+    yCoord = event.clientY;
+ }
