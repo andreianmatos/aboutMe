@@ -2,7 +2,7 @@
 
 body, html {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    background: linear-gradient(to top, whitesmoke 0%, gray 99%);;
+    background: whitesmoke;
     color: black;
     overflow-x: hidden;
     width: 99.5%;
