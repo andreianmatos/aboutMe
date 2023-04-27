@@ -72,6 +72,16 @@ body {
   color: gray;
 }
 
+.submenu {
+  cursor: pointer;
+  color: whitesmoke;
+  text-align: right;
+  display: none;
+}
+.submenu:hover {
+  color: gray;
+}
+
 
 @media screen and (max-width: 800px) {
   .leftpane, .middlepane, .rightpane {

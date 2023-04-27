@@ -1,24 +1,54 @@
 
 
 var currentSection = "";
-
+var currentSubSection = "";
 
 function show(hiddenSection) {
-    if(currentSection != hiddenSection){
+    if((currentSection + ' ' + currentSubSection) != hiddenSection){
+
+        if(currentSection != ""){
+            var shownElements = document.getElementsByClassName(currentSection + ' ' + currentSubSection);
+            Array.prototype.forEach.call(shownElements, function(element, index) {
+                element.style.display="none";
+                element_menu = "menu_" + currentSection;
+                document.getElementById(element_menu).style.color="whitesmoke";  
+                if(currentSubSection != ""){
+                    var submenu = "submenu " + currentSection;
+                    submenuElements = document.getElementsByClassName(submenu);
+                    Array.prototype.forEach.call(submenuElements, function(element, index) {
+                        element.style.display="none";
+                    }); 
+                    element_submenu = element_menu + '_' + currentSubSection;
+                    document.getElementById(element_submenu).style.color="whitesmoke"; 
+                }
+            });  
+        }   
+
+        currentSection = hiddenSection.split(/\s+/)[0];
+        if (/\s/.test(hiddenSection)) {
+            currentSubSection = hiddenSection.split(/\s+/)[1];        
+        }
+        else{
+            currentSubSection = ""
+        }
+        
         var hiddenElements = document.getElementsByClassName(hiddenSection);
         Array.prototype.forEach.call(hiddenElements, function(element, index) {
             element.style.display="block";
-            element_menu = "menu_" + hiddenSection;
-            document.getElementById(element_menu).style.color="gray";            
-        });
-        var shownElements = document.getElementsByClassName(currentSection);
-        Array.prototype.forEach.call(shownElements, function(element, index) {
-            element.style.display="none"; 
-            element_menu = "menu_" + element.getAttribute("class");~
-            console.log(element_menu)
-            document.getElementById(element_menu).style.color="whitesmoke";             
-        });   
-        currentSection = hiddenSection;
+            element_menu = "menu_" + currentSection;
+            document.getElementById(element_menu).style.color="gray"; 
+            console.log(currentSubSection)
+            if(currentSubSection != ""){
+                var submenu = "submenu " + currentSection;
+                submenuElements = document.getElementsByClassName(submenu);
+                Array.prototype.forEach.call(submenuElements, function(element, index) {
+                    element.style.display="block";
+                }); 
+                element_submenu = element_menu + '_' + currentSubSection;
+                document.getElementById(element_submenu).style.color="gray"; 
+            }
+        });  
+
     }
 }
 
