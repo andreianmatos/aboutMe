@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <!-- Meta -->
-        <title>Andreia Matos</title>
+        <title>Name name</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Styles -->
@@ -10,35 +10,74 @@
         <!-- JS -->
         <script type="text/javascript" src="script.js"></script>
     </head>
-   
-    <body>  
-        
-       <div class="logos">
-            <a id="git" target="_blank" href="https://github.com/andreianmatos"> github </a>
-            <a id="mail" target="_blank" href="mailto:andreianmatos@tecnico.ulisboa.pt"> andreianmatos@tecnico.ulisboa.pt </a>
-            <a id="linkedin" target="_blank" href="https://www.linkedin.com/in/andreianmatos"> linkedin </a>
-        </div>
-                
-        <!--<img src="img/pass.png" class="border" id="pic" width="200">-->
 
-        <p id="name" onmouseover="rotateName('down');" onmouseout ="rotateName('up');">ANDREIA MATOS</p>   
+    <div class="container">
 
-        <div id="about">
+        <div class="d-flex">
 
-            <p class="plainText">Holds a BSc in Computer Science and Engineering (2020) and is currently finishing a 
-                MSc in Computer Science with specializations in Artificial Intelligence and Interaction Visualization from Instituto Superior Técnico (IST) of the University of Lisboa (UL).</p>
+          <div class="leftpane">
+            <h2 id="name">Andreia Matos</h2>
+            <hr>
+            <p class = 'menu' id="menu_section1" onclick="show('section1')">About</p>
+            <p class = 'menu' id="menu_section2" onclick="show('section2')">Collage</p>
+            <p class = 'menu' id="menu_section2" onclick="show('section3')">Image</p>
+            <p class = 'menu' id="menu_section3" onclick="show('section4')">Video</p>
+            <p class = 'menu' id="menu_section3" onclick="show('section4')">Writings</p>
+            <hr>
+          </div>
 
-        </div>        
+          <div class="middlepane">
+            <div class="section1">
+              <p> 1999, Portugal </p>
+              <p>Based in Lisbon, Portugal</p>
+              <p>andreiangmatos@gmail.com</p>
+              <p><a href="https://www.linkedin.com/in/andreianmatos/" target="_blank">linkedin</a></p>
+              <p><a href="https://www.instagram.com/blaseez/" target="_blank">instagram</a></p>  
+            </div>
+            <div class="section2" >
+              <p>heree2</p> 
+            </div>
+            <div class="section3">
+              <p>her2e</p> 
+            </div>
+            <div class="section4">
+              <p>A series of videos - here snippet examples - of the original infinite loops, taken on lonely walks around the city. On mudane beauty, chance, aesthics, glitches.</p> 
+            </div>
+          </div>
 
-        <div id="topics">
+          <div class="rightpane">
+            <div class="section1">
+              <p>Holds a BSc in Computer Science and Engineering (2020) and a 
+              MSc in Computer Science: Artificial Intelligence & Computer Graphics (2022) from Instituto Superior Técnico (IST) of the University of Lisboa (UL).</p>
+              <p>Exploring image and sound reinterpretations by chance...</p>
+            </div>
+            <div class="section2">
+              <img class="img" width="250" src="img/collage1/img (1).jpg">
+              <img class="img" width="250" src="img/collage1/img (2).jpg">
+              <img class="img" width="250" src="img/collage1/img (3).jpg">
+              <img class="img" width="250" src="img/collage1/img (4).jpg">
+              <img class="img" width="250" src="img/collage1/img (5).jpg">
+              <img class="img" width="250" src="img/collage1/img (6).jpg">
+            </div>
+            <div class="section3">
+              <img class="img" width="250" src="img/plantShade/img (2).jpg">
+              <img class="img" width="250" src="img/plantShade/img (3).jpg">
+              <img class="img" width="250" src="img/plantShade/img (5).jpg">
+              <img class="img" width="250" src="img/plantShade/img (6).jpg">
+              <img class="img" width="250" src="img/plantShade/img (7).jpg">
+              <img class="img" width="250" src="img/plantShade/img (8).jpg">
+              <img class="img" width="250" src="img/plantShade/img (9).jpg">
+              <img class="img" width="250" src="img/plantShade/img (10).jpg">
+            </div>
+            <div class="section4">
+              <img class="gif" src="img/vids/vid1.gif">
+            </div>
 
-            <p class="title">Interests  &nbsp; <span class="plainText"> Creative Coding | Human Computer Interaction | Web Development | Machine Learning | Natural Language Processing </span> </p>
-                
-            <p class="title">Curriculum Vitæ &nbsp; <a target="_blank" href="files/Matos_Andreia_CV.pdf"><img src="img/download.png" width="20" > </a> </p>
-
-            <p class="title">Recommendations &nbsp; <a target="_blank" href="files/Rec_1.pdf"><img src="img/download.png" width="20" > </a> </p>
+            </div>
             
-        </div>        
+          </div>
+        </div>
+      </div>
 
     </body>
 </html>

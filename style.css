@@ -1,88 +1,78 @@
-@font-face { font-family: Engschrift; src: url('Engschrift.otf'); }
-
-body, html {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    background: whitesmoke;
-    color: black;
-    overflow-x: hidden;
-    width: 99.5%;
-    height: 99%;
+.container {
+  width: 100%;
+}
+  
+.leftpane {
+  width: 25%;
+  height: 100vh;
+  padding: 5%;
+  top: 0;
+  background-color: black;
+  color: whitesmoke;
+  position: sticky;
+  box-sizing: border-box;
 }
 
-::-webkit-scrollbar {
-    display: none;
+.middlepane {
+  width: 25%;
+  height: 100vh;
+  padding: 5%;
+  top: 0;
+  background-color: black;
+  color: whitesmoke;
+  position: sticky;
+  box-sizing: border-box;
 }
 
- /* unvisited link */
-a:link {
-    color: black;
-}
-/* visited link */
-a:visited {
-    color: black;
-}
-/* mouse over link */
-a:hover {
-    color: darkred;
-}
-/* selected link */
-a:active {
-    color: darkred;
+.rightpane {
+  width: 50%;
+  padding: 5%;
+  background-color: black;
+  color: whitesmoke;
 }
 
-.logos{
-    border: 5px solid black;
-    padding: 1%;
-    text-align: center;
+body {
+  margin: 0!important;
+  font-family: "Geneva";
+  background-color: black;
 }
 
-img:hover {
-    -webkit-transform: scale(1.1,1.1);
-    color: darkred;
+.d-flex {
+  display: flex;
 }
 
-#git{
-    float: left;
+.section2{
+  display: none;
 }
-#mail{
-    float: center;
+.section3{
+  display: none;
 }
-#linkedin{
-    float: right;
-}
-
-#name {    
-    font-size: 100px;
-    padding: 5%;
+.section4{
+  display: none;
 }
 
-
-.border {
-    border: 5px solid black;
-    padding: 1%;
+.img{
+  width: 30%;
+}
+.gif{
+  width: 100%;
 }
 
-#pic {
-    float: left; 
-    margin-left: 10%;
-    margin-top: 5%;
+.menu{
+  cursor: pointer;
 }
 
-#about{
-    margin-top: -10%;
-    margin-left: 10%;
-    width: 50%;
-}
-
-#topics{
-    margin-left: 10%;
-    margin-top: 5%;
-}
-
-.title {
-    font-size: 30px;
-}
-
-.plainText {
-    font-size: 18px;
+@media screen and (max-width: 800px) {
+  .leftpane, .middlepane, .rightpane {
+    width: 100%; 
+    height: fit-content;
+    box-sizing: border-box;
+    position: relative;
+  }
+  .d-flex{
+    display:block;
+  }
+  .img{
+    width: 100%;
+  }
 }

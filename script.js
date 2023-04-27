@@ -1,10 +1,20 @@
 
-var xCoord;
-var yCoord;
 
-function show(shown, hidden) {
-  document.getElementById(shown).style.display="block";
-  document.getElementById(hidden).style.display="none";
+var currentSection = "section1";
+
+
+function show(hiddenSection) {
+    if(currentSection!=hiddenSection){
+        var hiddenElements = document.getElementsByClassName(hiddenSection);
+        Array.prototype.forEach.call(hiddenElements, function(element, index) {
+            element.style.display="block";
+        });
+        var shownElements = document.getElementsByClassName(currentSection);
+        Array.prototype.forEach.call(shownElements, function(element, index) {
+            element.style.display="none";       
+        });   
+        currentSection = hiddenSection;
+    }
 }
 
 function rotateName(orient) {
@@ -13,16 +23,3 @@ function rotateName(orient) {
     else if(orient == "down")
         document.getElementById("name").style.webkitTransform = "rotate(-180deg)";
 }
-
-setInterval(function changeFontSize() {
-    var previousGrad =  document.body.style.background.substring(44,47);
-    console.log(previousGrad);
-    previousGrad.replace("%)","");
-    console.log(previousGrad);
-    document.body.style.background = "linear-gradient(to top, whitesmoke 0%, gray " +  parseInt(previousGrad) + parseInt(yCoord) + "%)";
-}, 1);
-
-function coordinate(event) {
-    xCoord = event.clientX;
-    yCoord = event.clientY;
- }
