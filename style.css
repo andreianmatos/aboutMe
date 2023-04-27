@@ -41,6 +41,9 @@ body {
   display: flex;
 }
 
+.section1{
+  display: none;
+}
 .section2{
   display: none;
 }

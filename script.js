@@ -1,10 +1,10 @@
 
 
-var currentSection = "section1";
+var currentSection = "";
 
 
 function show(hiddenSection) {
-    if(currentSection!=hiddenSection){
+    if(currentSection != hiddenSection){
         var hiddenElements = document.getElementsByClassName(hiddenSection);
         Array.prototype.forEach.call(hiddenElements, function(element, index) {
             element.style.display="block";
