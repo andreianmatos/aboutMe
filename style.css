@@ -58,10 +58,10 @@ body {
 }
 
 .img{
-  width: 30%;
+  width: 45%;
 }
 .gif{
-  width: 100%;
+  width: 90%;
 }
 
 .menu{
@@ -79,6 +79,9 @@ body {
     display:block;
   }
   .img{
+    width: 100%;
+  }
+  .gif{
     width: 100%;
   }
 }
