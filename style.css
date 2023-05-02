@@ -3,7 +3,7 @@
 }
   
 .leftpane {
-  width: 25%;
+  width: 26%;
   height: 100vh;
   padding: 5%;
   top: 0;
@@ -25,7 +25,7 @@
 }
 
 .rightpane {
-  width: 50%;
+  width: 49%;
   padding: 5%;
   background-color: black;
   color: whitesmoke;
@@ -93,12 +93,11 @@ body {
   .d-flex{
     display:block;
   }
-  .img{
-    width: 100%;
-  }
+ 
   .gif{
     width: 100%;
   }
+
 }
 
 a:link {
@@ -125,4 +124,21 @@ h2{
 }
 p{
   font-size: 1em;
+}
+
+.img-wrapper {
+  line-height: 1%;
+  
+  -webkit-column-count: 2;
+  -webkit-column-gap:   1%;
+  -moz-column-count:    2;
+  -moz-column-gap:       1%;
+  column-count:         2;
+  column-gap:            1%;
+}
+
+.img-wrapper img {
+ width: 100% !important;
+ height: auto !important;
+ margin-top: 2%;
 }
