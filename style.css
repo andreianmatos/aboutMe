@@ -118,6 +118,12 @@ body {
   .namejustify {
     text-align: left;
   }
+  .namejustify:after {
+    content: "";
+    display: inherit;
+    width: 100%;	
+  }
+
   #name{
     font-size: 1.8em;
   }
