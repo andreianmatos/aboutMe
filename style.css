@@ -11,12 +11,15 @@
   color: whitesmoke;
   position: sticky;
   box-sizing: border-box;
+  
 }
 
 .middlepane {
   width: 25%;
   height: 100vh;
   padding: 5%;
+  padding-right: 4%;
+
   top: 0;
   background-color: black;
   color: whitesmoke;
@@ -35,6 +38,19 @@ body {
   margin: 0!important;
   font-family: "Geneva";
   background-color: black;
+}
+
+.namejustify {
+  text-align: justify;
+}
+.namejustify:after {
+    content: "";
+    display: inline-block;
+    width: 100%;	
+}
+
+#name {
+    font-size: 2.1vw;
 }
 
 .d-flex {
@@ -56,6 +72,7 @@ body {
 .section5{
   display: none;
 }
+
 
 .img{
   width: 45%;
@@ -98,6 +115,13 @@ body {
     width: 100%;
   }
 
+  .namejustify {
+    text-align: left;
+  }
+  #name{
+    font-size: 1.8em;
+  }
+
 }
 
 a:link {
@@ -119,9 +143,7 @@ a:active {
   color: lightblue;
 }
 
-h2{
-  font-size: 1.6em;
-}
+
 p{
   font-size: 1em;
 }
