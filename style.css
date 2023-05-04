@@ -81,6 +81,21 @@ body {
   width: 90%;
 }
 
+audio::-webkit-media-controls-panel {
+  background-color: whitesmoke;
+}
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.clear { 
+  clear: both; 
+}
+
 .menu{
   cursor: pointer;
   color: whitesmoke;
@@ -154,6 +169,17 @@ p{
   font-size: 1em;
 }
 
+.gif-wrapper {
+  line-height: 1%;
+  
+  -webkit-column-count: 1;
+  -webkit-column-gap:   1%;
+  -moz-column-count:    1;
+  -moz-column-gap:       1%;
+  column-count:         1;
+  column-gap:            1%;
+}
+
 .img-wrapper {
   line-height: 1%;
   
@@ -170,3 +196,21 @@ p{
  height: auto !important;
  margin-top: 2%;
 }
+
+.img-wrapper2 {
+  line-height: 1%;
+  
+  -webkit-column-count: 3;
+  -webkit-column-gap:   1%;
+  -moz-column-count:    3;
+  -moz-column-gap:       1%;
+  column-count:         3;
+  column-gap:            1%;
+}
+
+.img-wrapper2 img {
+ width: 100% !important;
+ height: auto !important;
+ margin-top: 2%;
+}
+
