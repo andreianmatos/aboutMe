@@ -59,3 +59,6 @@ function rotateName(orient) {
         document.getElementById("name").style.webkitTransform = "rotate(-180deg)";
 }
 
+function scrollToTop() {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+}
