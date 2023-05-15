@@ -81,8 +81,9 @@ body {
   width: 90%;
 }
 
-audio::-webkit-media-controls-panel {
+audio {
   background-color: whitesmoke;
+  border-radius: 0%;
 }
 .left {
   float: left;
