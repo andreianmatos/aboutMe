@@ -1,3 +1,16 @@
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: black; 
+}
+ ::-webkit-scrollbar-thumb {
+  background: whitesmoke; 
+}
+::-webkit-scrollbar-thumb:hover {
+  background: whitesmoke; 
+}
+
 .container {
   width: 100%;
 }
@@ -164,6 +177,11 @@ a:hover {
 /* selected link */
 a:active {
   color: lightblue;
+}
+
+#showingLink {
+  color: whitesmoke;
+  text-decoration: none;
 }
 
 
