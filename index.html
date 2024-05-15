@@ -15,6 +15,7 @@
       <link rel="stylesheet" href="style.css">
       <!-- JS -->
       <script type="text/javascript" src="script.js"></script>
+      <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
     </head>
 
     <div class="container">
@@ -28,9 +29,9 @@
             <p class = 'menu' id="menu_section1" onclick="show('section1'); scrollToTop();">* About</p>
             <p class = 'menu' id="menu_section2" onclick="show('section2 subsection1'); scrollToTop();">* Work</p>
             <p class = 'submenu section2' id="menu_section2_subsection1" onclick="show('section2 subsection1'); scrollToTop();">~ i</p>
-            <!-- <p class = 'submenu section2' id="menu_section2_subsection2" onclick="show('section2 subsection2'); scrollToTop();">~ ii</p>-->
+            <p class = 'submenu section2' id="menu_section2_subsection2" onclick="show('section2 subsection2'); scrollToTop();">~ ii</p>
             <!-- <p class = 'submenu section2' id="menu_section2_subsection3" onclick="show('section2 subsection3'); scrollToTop();">~ iii</p>-->
-            <p class = 'submenu section2' id="menu_section2_subsection4" onclick="show('section2 subsection4'); scrollToTop();">~ ii</p>
+            <p class = 'submenu section2' id="menu_section2_subsection4" onclick="show('section2 subsection4'); scrollToTop();">~ iii</p>
             <br>
             <!-- <p> <a id="showingLink" href="gallery.html" target="_blank">> Showing</p>-->
 
@@ -51,7 +52,7 @@
              
             </div>
             <div class="section2 subsection2">
-              <p>Ceramics + quick drawings + such.</p> 
+              <p>Ceramics.</p> 
             </div>
             <div class="section2 subsection3">
               <p>Photographs...</p> 
@@ -294,79 +295,17 @@
             </div>
                      
             <div class="section2 subsection2">
-              <div class="gif-wrapper">
-                <img class="img right" src="data/sketches/drw (37).png">
+              <div class="model-wrapper clear">
+                  <model-viewer class="model" src="data/ceramics/3d_model/purple_bawl.glb" 
+                  alt="Purple Bawl" ar ar-modes="webxr scene-viewer quick-look" 
+                  camera-controls camera-orbit="90deg 30deg" autoplay animation-controls></model-viewer>
               </div>
               <br><br>
-              <div class="img-wrapper clear">
-                <img class="img" src="data/ceramics/ceramics (12).jpg">
-                <img class="img right" src="data/ceramics/ceramics (13).jpg">
-              </div> 
-              <br><br>
-              <div class="img-wrapper2 clear">
-                <img class="img" src="data/ceramics/ceramics (9).jpg">
-                <img class="img right" src="data/ceramics/ceramics (10).jpg">
-                <img class="img right" src="data/ceramics/ceramics (11).jpg">
-              </div> 
-              <br><br>
-              <div class="img-wrapper">
-                <img class="img left" src="data/sketches/drw (18).jpg">
-                <img class="img right" src="data/sketches/drw (19).jpg">
-                <img class="img left" src="data/sketches/drw (20).jpg">
-                <img class="img right" src="data/sketches/drw (21).jpg">
-              </div>
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="img" src="data/ceramics/ceramics (6).jpg">
-                <img class="img right" src="data/ceramics/ceramics (4).jpg">
-              </div> 
-              <br><br>
-              <div class="img-wrapper2">
-                <img class="img left" src="data/sketches/drw (28).png">
-                <img class="img right" src="data/sketches/drw (9).jpg">
-                <img class="img right" src="data/sketches/drw (17).jpg">
-                <img class="img right" src="data/sketches/drw (30).jpg">
-                <img class="img right" src="data/sketches/drw (29).jpg">
-                <img class="img right" src="data/sketches/drw (15).jpg">
-                <img class="img right" src="data/sketches/drw (1).jpg">
-                <img class="img right" src="data/sketches/drw (8).jpg">
-              </div>
-              <br><br>
-              <div class="img-wrapper">
-                <img class="img left" src="data/sketches/drw (23).jpg">
-                <img class="img right" src="data/sketches/drw (6).jpg">
-              </div>
-              <br><br>
-              <div class="img-wrapper2 clear">
-                <img class="img" src="data/ceramics/ceramics (5).jpg">
-                <img class="img right" src="data/ceramics/ceramics (1).jpg">  
-                <img class="img right" src="data/ceramics/ceramics (2).jpg">   
-                <img class="img right" src="data/ceramics/ceramics (7).jpg">                                                                 
-              </div> 
-              <br><br>
-              <div class="img-wrapper2 clear">
-                <img class="img left" src="data/sketches/drw (4).jpg">
-                <img class="img left" src="data/sketches/drw (16).jpg">
-                <img class="img right" src="data/sketches/drw (36).jpg">
-              </div>
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="img left" src="data/ceramics/ceramics (8).jpg">
-                <img class="img right" src="data/ceramics/ceramics (3).jpg">                  
-              </div> 
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="img left" src="data/sketches/drw (24).jpg">
-                <img class="img right" src="data/sketches/drw (32).jpg">
-              </div> 
-              <br><br>
-             
-              
             </div>
 
             <div class="section2 subsection3">
               
-              <div class="img-wrapper2 clear">
+              <div class="img-wrapper2">
                 <img class="img" src="data/photo/pol (8).jpg"> 
               </div>
               <br><br>
