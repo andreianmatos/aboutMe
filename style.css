@@ -14,7 +14,6 @@
 .container {
   width: 100%;
 }
-
   
 .leftpane {
   width: 26%;
@@ -163,6 +162,7 @@ audio {
 
 a:link {
   color: lightblue;
+  text-decoration: none;
 }
 
 /* visited link */
@@ -247,4 +247,28 @@ p{
 }
 
 .model {
+}
+
+.collapsible {
+  cursor: pointer;
+  user-select: none;
+  padding: 10px;
+  margin-top: 5px;
+  display: flex;
+}
+.content {
+  display: none; /* Initially hide the content */
+  overflow: hidden;
+}
+.arrow {
+  width: 12px; /* Set a fixed width for the arrow */
+  height: 12px; /* Set a fixed height for the arrow */
+  display: inline-block; /* Ensures block-level elements */
+  transition: transform 0.3s ease; /* Smooth transition for transform */
+}
+.arrow-down {
+  transform: rotate(90deg);
+}
+.arrow-up {
+  transform: rotate(-90deg);
 }

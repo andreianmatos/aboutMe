@@ -62,3 +62,23 @@ function rotateName(orient) {
 function scrollToTop() {
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.collapsible').forEach(item => {
+      let content = item.nextElementSibling;
+      let arrow = item.querySelector('.arrow');
+  
+      item.addEventListener('click', function() {
+        if (content.style.display === 'block') {
+          content.style.display = 'none';
+          arrow.classList.remove('arrow-down');
+          arrow.classList.add('arrow-up');
+        } else {
+          content.style.display = 'block';
+          arrow.classList.remove('arrow-up');
+          arrow.classList.add('arrow-down');
+        }
+      });
+    });
+  });
+  
