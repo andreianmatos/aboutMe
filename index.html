@@ -16,6 +16,9 @@
       <!-- JS -->
       <script type="text/javascript" src="script.js"></script>
       <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     </head>
 
     <div class="container">
@@ -24,7 +27,8 @@
 
           <div class="leftpane">
             <h2 id="name" class="namejustify" onclick="show('')" onmouseover="rotateName('down');" onmouseout ="rotateName('up');">
-              Andreia Matos
+              <span class="left-name">Andreia</span>
+              <span class="right-name">Matos</span>
             </h2>
             <p class = 'menu' id="menu_section1" onclick="show('section1'); scrollToTop();">* About</p>
             <p class = 'menu' id="menu_section2" onclick="show('section2 subsection1'); scrollToTop();">* Work</p>
@@ -91,8 +95,11 @@
 
               <div class="collapsible"><span class="arrow arrow-up">&#9662;</span>&nbsp;&nbsp;<u>Education</u></div>
                 <div class="content">
-                  
-                  <p>(2020-2022) MSc in Computer Science and Engineering</p>
+                  <p>(2024-2025) <b>PGDip in Visual Studies: Photography and (Post) Cinema</b></p>
+                  <blockquote>
+                    <p>from Faculdade de Ciências Sociais e Humanas (FCSH), Universidade Nova de Lisboa (NOVA)</p>
+                  </blockquote>
+                  <p>(2020-2022) <b>MSc in Computer Science and Engineering</b></p>
                   <blockquote>
                     <p>from Instituto Superior Técnico (IST), Universidade de Lisboa (UL)</p>
                     <blockquote>
@@ -100,7 +107,7 @@
                       <p>+ Erasmus programme at Université Grenoble Alpes (UGA)</p>
                     </blockquote>
                   </blockquote>
-                  <p>(2017-2020) BSc in Computer Science and Engineering</p>
+                  <p>(2017-2020) <b>BSc in Computer Science and Engineering</b></p>
                   <blockquote>
                     <p>from Instituto Superior Técnico (IST), Universidade de Lisboa (UL)</p>
                   </blockquote>
