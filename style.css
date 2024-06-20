@@ -82,7 +82,6 @@ body {
   width: 100%; /* Ensure the name spans the entire width */
   margin: 0; /* Remove default margin */
   padding: 0; /* Remove default padding */
-  margin-bottom: 30%;
 }
 
 .d-flex {
