@@ -178,6 +178,13 @@ audio {
 
 }
 
+.strong-hr {
+  border: none;
+  height: 5px; /* Adjust the thickness */
+  background-color: white; /* Adjust the color */
+  margin: 40px 0; /* Adjust the spacing around the line */
+}
+
 a:link {
   color: lightblue;
   text-decoration: none;
