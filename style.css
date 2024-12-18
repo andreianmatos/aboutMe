@@ -240,6 +240,7 @@ p{
   column-gap:            1%;
 }
 
+
 .model-wrapper {
   line-height: 1%;
   
@@ -299,4 +300,43 @@ p{
 }
 .arrow-up {
   transform: rotate(-90deg);
+}
+
+.video-container {
+  margin: 20px auto;
+  width: 80%;
+  max-width: 800px;
+}
+
+.video-wrapper {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  overflow: hidden;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.video-description {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.video-description h3 {
+  margin: 0 0 5px;
+  font-size: 1.2em;
+  color: #f2f2f2;
+}
+
+.video-description p {
+  margin: 0;
+  font-size: 1em;
+  color: #cccccc;
 }
