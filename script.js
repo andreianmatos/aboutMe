@@ -59,6 +59,15 @@ function rotateName(orient) {
         document.getElementById("name").style.webkitTransform = "rotate(-180deg)";
 }
 
+function setLanguage(lang) {
+    var select = document.querySelector(".goog-te-combo"); // Google Translate dropdown
+    if (select) {
+        select.value = lang; // Set the language
+        select.dispatchEvent(new Event("change")); // Trigger change event
+    } else {
+        console.error("Google Translate dropdown not found.");
+    }
+}
 function scrollToTop() {
     window.scrollTo({top: 0, behavior: 'smooth'});
 }

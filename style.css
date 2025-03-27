@@ -52,6 +52,36 @@ body {
   background-color: black;
 }
 
+.language-toggle {
+  position: absolute; 
+  top: 10px;
+  left: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+
+.language-toggle span {
+  margin: 0 5px;
+  color: white;
+}
+
+.language-toggle span:hover {
+  text-decoration: underline;
+}
+
+.lang-option {
+  margin: 0 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.active-lang {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
 .archivo-narrow-medium {
   font-family: "Archivo Narrow", sans-serif;
   font-optical-sizing: auto;
