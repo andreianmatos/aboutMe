@@ -19,10 +19,11 @@
 
             <!-- LEFT PANE -->
             <div class="leftpane">
-                <h2 id="name" onclick="show('')">Andreia Matos</h2>
+                <h2 id="name" onclick="show(''); scrollToTop();">Andreia Matos</h2>
                 <div class="nav-links">
-                    <p class="menu" onclick="show('section1'); scrollToTop();">* About</p>
-                    <p class="menu" onclick="show('section2'); scrollToTop();">* Work</p>
+                    <!-- IDs added, asterisks removed -->
+                    <p id="nav-about" class="menu" onclick="show('section1'); scrollToTop();">About</p>
+                    <p id="nav-work" class="menu" onclick="show('section2'); scrollToTop();">Work</p>
                 </div>
             </div>
 

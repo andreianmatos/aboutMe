@@ -1,23 +1,32 @@
 function show(sectionId) {
     const allContent = document.querySelectorAll('.content-div');
+    const allMenuItems = document.querySelectorAll('.menu');
     
-    // Remove the visibility class from everything
+    // 1. Hide all content sections
     allContent.forEach(div => {
         div.classList.remove('is-visible');
     });
 
-    // If a sectionId is provided, add the class to show those specific divs
-    if (sectionId) {
-        const targetSections = document.querySelectorAll('.' + sectionId);
-        targetSections.forEach(div => {
-            div.classList.add('is-visible');
-        });
+    // 2. Remove "active" (and the asterisk) from all links
+    allMenuItems.forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // 3. Show specific section and highlight the clicked link
+    if (sectionId === 'section1') {
+        document.querySelectorAll('.section1').forEach(div => div.classList.add('is-visible'));
+        document.getElementById('nav-about').classList.add('active');
+    } 
+    else if (sectionId === 'section2') {
+        document.querySelectorAll('.section2').forEach(div => div.classList.add('is-visible'));
+        document.getElementById('nav-work').classList.add('active');
         
-        // Only run scatter logic on Desktop
-        if (sectionId === 'section2' && window.innerWidth > 800) {
+        // Scatter images logic for Desktop
+        if (window.innerWidth > 800) {
             setTimeout(scatterItems, 50);
         }
     }
+    // Note: If sectionId is empty (clicking the name), everything stays hidden/dimmed
 }
 
 function scrollToTop() {
