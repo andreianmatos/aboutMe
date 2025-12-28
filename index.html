@@ -1,653 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-      <link rel="manifest" href="/site.webmanifest">
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-      <link rel="manifest" href="/site.webmanifest">      <title>Andreia Matos</title>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- Styles -->
-      <link rel="stylesheet" href="style.css">
-      <!-- JS -->
-      <script type="text/javascript" src="script.js"></script>
-      <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-      <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement(
-                { pageLanguage: 'en', includedLanguages: 'pt,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
-                'google_translate_element'
-            );
-        }
-        </script>
-        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-        
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andreia Matos</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
 
     <div class="container">
-
         <div class="d-flex">
 
-          <div class="leftpane">
-
-            <!--
-          <div class="language-toggle">
-              <span class="lang-option" onclick="setLanguage('en')">EN</span> |
-              <span class="lang-option" onclick="setLanguage('pt')">PT</span>
-          </div>
-          -->
-
-          <!-- Hidden Google Translate Element (Must be included) -->
-          <div id="google_translate_element" style="visibility: hidden;"></div>
-
-            <h2 id="name" class="namejustify" onclick="show('')" onmouseover="rotateName('down');" onmouseout ="rotateName('up');">
-              <span class="left-name">Andreia</span>
-              <span class="right-name">Matos</span>
-            </h2>
-            <p class = 'menu' id="menu_section1" onclick="show('section1'); scrollToTop();">* About</p>
-            <p class = 'menu' id="menu_section2" onclick="show('section2 subsection1'); scrollToTop();">* Work</p>
-            <p class = 'submenu section2' id="menu_section2_subsection1" onclick="show('section2 subsection1'); scrollToTop();">~ reinterpretations</p>
-            <p class = 'submenu section2' id="menu_section2_subsection5" onclick="show('section2 subsection5'); scrollToTop();">~ films</p>
-            <p class = 'submenu section2' id="menu_section2_subsection2" onclick="show('section2 subsection2'); scrollToTop();">~ other</p>
-             <!--<p class = 'submenu section2' id="menu_section2_subsection2" onclick="show('section2 subsection2'); scrollToTop();">~ ii</p>-->
-            <!-- <p class = 'submenu section2' id="menu_section2_subsection3" onclick="show('section2 subsection3'); scrollToTop();">~ iii</p>-->
-            <p class = 'submenu section2' id="menu_section2_subsection4" onclick="show('section2 subsection4'); scrollToTop();">~ writings</p>
-            <br>
-            <!-- <p> <a id="showingLink" href="gallery.html" target="_blank">> Showing</p>-->
-
-          </div>
-
-          <div class="middlepane">
-            <div class="section1">
-              <p>andreiangmatos@gmail.com</p>
-              <!--<p><a href="https://github.com/andreianmatos/" target="_blank">github</a></p>  -->
-              <p><a href="https://www.linkedin.com/in/andreianmatos/" target="_blank">linkedin</a></p>
-              <p><a href="https://www.instagram.com/blaseez/" target="_blank">instagram</a></p>  
-              <p><a href="https://www.youtube.com/@blasees" target="_blank">youtube</a></p>  
-              <p><a href="https://soundcloud.com/blasees" target="_blank">soundcloud</a></p>  
-            </div>
-            <div class="section2 subsection1">
-              <p>Visuals and sounds out of explorative algorithms —  an intentional collaboration with automation.</p> 
-              <p>From subsets of personal photographs, videos, drawings, sounds, to infinite generative loops of chance reinterpretations, to glimpses of lucky beauty.</p> 
-             
-            </div>
-            <div class="section2 subsection2">
-              <p>Photography, ceramics, drawings ...</p> 
-            </div>
-            <div class="section2 subsection3">
-              <p>Photographs...</p> 
-            </div>
-            <div class="section2 subsection4">
-              <p>Academic + other writings. </p> 
-            </div>
-            <div class="section2 subsection5">
-              <p>Audiovisual works.. </p> 
-            </div>         
-            </div>
-
-          <div class="rightpane">
-            <div class="section1">
-
-              <p>
-              b. 1999, Viseu, Portugal
-              </p>
-              <p>
-              Based in Lisboa, Portugal
-              </p>
-              <p>
-              ,,,
-              </p>
-              <p>
-              Multidimensional exploration characterized by an impulsive + conceptual nature, with a focus on reinterpretation through plastic + algorithmic manipulation.
-            </p>
-             
-            <p>
-              ,,,
-            </p>              
-              <!-- <br><br><hr><br><br> -->
-
-              <div class="collapsible"><span class="arrow arrow-up">&#9662;</span>&nbsp;&nbsp;<u>Education</u></div>
-                <div class="content">
-
-                  <p>(2024-Present) <b>MSc in  Contemporary Culture and New Technologies</b></p>
-                  <blockquote>
-                    <p>from Faculdade de Ciências Socias e Humanas (FCSH), Universidade Nova de Lisboa (NOVA)</p>
-
-                  </blockquote>            
-                  <p>(2020-2022) <b>MSc in Computer Science and Engineering</b></p>
-                  <blockquote>
-                    <p>from Instituto Superior Técnico (IST), Universidade de Lisboa (UL)</p>
-                    <blockquote>
-                      <p>Specializations: Artificial Intelligence | Computer Graphics</p>
-                      <p>+ Erasmus Exchange Programme at École Nationale Supérieure d'Informatique et de Mathématiques Appliquées (ENSIMAG), Université Grenoble Alpes (UGA), Grenoble, France</p>
-                    </blockquote>
-                  </blockquote>
-                  <p>(2017-2020) <b>BSc in Computer Science and Engineering</b></p>
-                  <blockquote>
-                    <p>from Instituto Superior Técnico (IST), Universidade de Lisboa (UL)</p>
-                  </blockquote>
-
-                  <!--<p>
-                    \
-                  </p> 
-
-                  <p>(2024) Classic Bookbinding — Workshop at Artlier</a></p>
-                  <p>(2023) Ceramics: Handbuilding & Glazing — Workshops at Corrente Arroios</a></p>-->
-                  
-              </div>
-
-              <div class="collapsible"><span class="arrow arrow-up">&#9662;</span>&nbsp;&nbsp;<u>Experience</u></div>
-                <div class="content">
-                  <p>(01.2023-Present) <b>Data Scientist </b>— <b>Nokia</b>, Lisboa, Portugal</p>
-                  <blockquote>
-                    <p>Research and Development on AI Algorithms</p>
-                  </blockquote>
-                  <p>(12.2023-03.2024) <b>Research Assistant</b> — <b>Tallinn University (TLU)</b>, Tallinn, Estonia (Remote)</p>
-                  <blockquote>
-                    <p><a href="https://modina.eu/" target="_blank">MODINA - Movement, Digital Intelligence and Interactive Audience</a></p>
-                  </blockquote>
-                  <p>(03.2022-07.2022) <b>Invited Teaching Assistant</b> — <b>Instituto Superior Técnico (IST)</b>, Lisboa, Portugal</p>
-                  <blockquote>
-                    <p><a href="https://fenix.tecnico.ulisboa.pt/disciplinas/CCEIC2/2021-2022/2-semestre" target="_blank">Communication in Engineering Course</a></p>
-                  </blockquote>
-                  <p>(09.2021-10.2022) <b>Research Intern</b>— <b>INESC-ID</b>, Lisboa, Portugal</p>
-                  <blockquote>
-                    <p><a href="https://gaips.inesc-id.pt/" target="_blank">Group of Artificial Intelligence for People and Society (GAIPS)</a></p>
-                  </blockquote>
-              
-              <p>
-                \
-              </p> 
-
-              <p>(2024, 2025) Programming Team — Olhares do Mediterrâneo, Women's Film Festival, Lisboa, Portugal</p>
-              <p>(2022, 2023) Production Support — Doclisboa, International Film Festival, Lisboa, Portugal</p>
-              <p>(2022) Production Support — Queer Lisboa, International Film Festival, Lisboa, Portugal</p>
-              <p>(2020-2022) Co-Founder — <a href="https://kinokave.github.io/" target="_blank">Kino Kave Cineclub</a>, Autonomous Section of the Students' Union</p>
-            
-            </div>    
-
-            
-             <!--<p>
-              ,,,
-            </p> 
-            
-            <div class="collapsible"><span class="arrow arrow-up">&#9662;</span>&nbsp;&nbsp;<u>Publications</u></div>
-            <div class="content">
-              
-              <p>(2024) <a href="https://scholar.google.com/citations?view_op=view_citation&hl=pt-PT&user=0UkLBTMAAAAJ&citation_for_view=0UkLBTMAAAAJ:d1gkVwhDpl0C" target="_blank">Designing for Kinaesthetic Empathy through Movement Matching using Machine Learning and Pose Estimation</a> | Co-Author. William Primett, Nuno N. Correia, Naoto Hieda</p>
-              <p>(2022) <a href="https://scholar.google.com/citations?view_op=view_citation&hl=pt-PT&user=0UkLBTMAAAAJ&citation_for_view=0UkLBTMAAAAJ:d1gkVwhDpl0C&target=_blank" target="_blank">On the Feeling of Acoustic and Visual Tension in Generative Art</a> | Author, MSc Thesis </p>
-              
-              <p>/</p>
-
-              <p>(2024) <a href="https://www.instagram.com/safelightpaper/" target="_blank">S/Título Nº6</a> visual work in printed magazine, PT</a></p>
-              <p>(2024) <a href="https://www.instagram.com/thelimitsofthebody/" target="_blank">The Limits of The Body Nº1</a> | visual essay in printed zine, Edinburgh, GB</a></p>
-
-            </div>
-
-            <div class="collapsible"><span class="arrow arrow-up">&#9662;</span>&nbsp;&nbsp;<u>Exhibitions</u></div>
-            <div class="content">
-
-              <p>(2025) <a href="https://sfpc.study/projects/ecpc" target="_blank">S/Título</a> | group exhibition curated by S/Título at gallery Procur.arte, Lisboa, PT</a></p>
-              <p>(2023) <a href="https://sfpc.study/projects/ecpc" target="_blank">Electronic Cafe for Poetic Computation</a> | visual work at electronic art archive in the internet café installation by School for Poetic Computation, New York, USA</a></p>
-
-            </div>-->
-           
-            </div>
-            
-
-            <div class="section2 subsection1">
-              <div class="img-wrapper2clear">
-                <img class="img " src="data/angel_fuller.jpeg">
-              </div>
-              <br><br> 
-              <div class="img-wrapper2 clear">
-                <img class="img left" src="data/collage10/img (5).jpg">
-                <img class="img left" src="data/collage10/img (4).jpg">
-                <img class="img right" src="data/collage10/img (6).jpg">
-              </div>
-              <br><br> 
-              <div class="gif-wrapper clear">
-                <img class="gif2 right" src="data/vids1/vid (15).gif">
-              </div>
-              <br><br> 
-              <div class="img-wrapper2 clear">
-                <img class="img left" src="data/collage10/img (2).jpg">
-                <img class="img left" src="data/collage10/img (1).jpg">
-                <img class="img right" src="data/collage10/img (3).jpg">
-              </div>
-              <br><br> 
-              <!--
-              <div class="gif-wrapper clear">
-                <img class="gif right" src="data/vids1/analogsketch.gif">
-              </div>
-              <br><br> -->
-              <div class="img-wrapper clear">
-                <img class="img" src="data/collage9/img (2).png">
-              </div>
-              <br><br> 
-              <div class="img-wrapper2 clear">
-                <img class="img left" src="data/collage9/img (3).jpg">
-                <img class="img left" src="data/collage9/img (6).jpg">
-                <img class="img right" src="data/collage9/img (4).jpg">
-              </div>
-              <br><br>              
-              <div class="gif-wrapper clear">
-                <img class="gif right" src="data/vids1/vid (14).gif">
-              </div>
-              <br><br>              
-              <div class="img-wrapper clear">
-                <img class="img left" src="data/collage8/collage (1).jpg">
-                <img class="img right" src="data/collage8/collage (3).jpg">
-              </div>
-              <br><br>              
-              <div class="img-wrapper2 clear">
-                <img class="img left" src="data/collage7/collage (5).jpg">
-                <img class="img left" src="data/collage7/collage (13).jpg">
-                <img class="img right" src="data/collage7/collage (6).jpg">
-              </div>
-              <br><br>
-              <div class="gif-wrapper clear">
-                <img class="gif left" src="data/vids1/vid (9).gif">
-              </div>
-              <br><br>
-              <div class="img-wrapper2 clear">
-                <img class="img left" src="data/collage1/letr (1).jpg">
-                <img class="img left" src="data/collage1/letr (2).jpg">
-                <img class="img right" src="data/collage1/letr (3).jpg">
-              </div>
-              <br><br>
-              <audio controls class="audio right">
-                <source src="data/sounds/parquebensaude1.mp3" type="audio/mpeg">
-              Your browser does not support the audio element.
-              </audio>
-              <br><br>
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="img left" src="data/collage4/img (33).jpg">
-                <img class="img right" src="data/collage4/img (28).jpg">
-              </div>
-              <br><br>
-              <div class="gif-wrapper clear">
-                <img class="gif right" src="data/vids1/vid (1).gif">
-              </div>
-              <br><br>
-              <div class="img-wrapper2 clear">
-                <img class="img left" src="data/collage4/img (1).jpg">
-                <img class="img left" src="data/collage4/img (31).jpg">
-                <img class="img right" src="data/collage4/img (35).jpg">
-              </div>
-              <br><br>
-              <div class="img-wrapper clear">              
-                <img class="img left" src="data/collage4/img (29).jpg">
-                <img class="img left" src="data/collage4/img (23).jpg">                
-              </div>
-              <br><br>
-              <div class="img-wrapper2">
-                <img class="img" src="data/collage1/img (3).jpg">
-                <img class="img" src="data/collage1/img (4).jpg">
-                <img class="img" src="data/collage1/img (6).jpg">
-                <img class="img" src="data/collage1/img (7).jpg">
-              </div>   
-              <br><br> 
-              <div class="gif-wrapper clear">
-                <img class="gif left" src="data/vids1/vid (5).gif">
-              </div>
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="img left" src="data/collage4/img (26).jpg">
-                <img class="img right" src="data/collage4/img (34).jpg">
-              </div> 
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="img" src="data/collage2/img (1).jpg">
-                <img class="img right" src="data/collage2/img (2).jpg">                
-              </div>              
-              <br><br>
-              <div class="gif-wrapper clear">
-                <img class="gif right" src="data/vids1/vid (6).gif">
-              </div>
-              <br><br>                        
-              <div class="img-wrapper2 clear">
-                <img class="img left" src="data/collage3/img (2).jpg">
-                <img class="img left" src="data/collage3/img (1).jpg">                
-                <img class="img right" src="data/collage3/img (3).jpg">
-              </div>
-              <br><br>             
-              <div class="img-wrapper clear">
-                <img class="img" src="data/reinterpretations1/img (8).jpg">
-              </div> 
-              <div class="img-wrapper2 clear">
-                <img class="img right" src="data/reinterpretations1/img (5).jpg">                  
-                <img class="img right" src="data/reinterpretations1/img (7).jpg">
-                <img class="img right" src="data/reinterpretations1/img (9).jpg">
-              </div> 
-              <br><br>
-              <div class="img-wrapper2 clear">              
-                <img class="img left" src="data/collage5/img (4).jpg">
-                <img class="img left" src="data/collage5/img (3).jpg">                
-                <img class="img right" src="data/collage5/img (5).jpg">
-              </div>
-              <br><br>
-              <div class="gif-wrapper clear">
-                <img class="gif left" src="data/vids1/vid (2).gif">
-              </div> 
-              <br><br>
-              <div class="img-wrapper clear">              
-                <img class="img left" src="data/collage4/img (38).jpg">
-                <img class="img left" src="data/collage4/img (32).jpg">                
-              </div>
-              <br><br>              
-              <div class="img-wrapper clear">              
-                <img class="img" src="data/collage5/img (8).jpg">
-              </div>
-              <br><br>
-              <div class="gif-wrapper clear">
-                <img class="gif right" src="data/vids1/vid (3).gif">
-              </div>
-              <br><br>
-              <audio controls class="audio">
-                <source src="data/sounds/dente_de_serra.mp3" type="audio/mpeg">
-              Your browser does not support the audio element.
-              </audio>
-              <br><br>          
-              <div class="img-wrapper2 clear">
-                <img class="img right" src="data/collage4/img (3).jpg">
-                <img class="img left" src="data/collage4/img (39).jpg">
-                <img class="img right" src="data/collage4/img (41).jpg">
-              </div>
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="gif left" src="data/vids1/vid (7).gif">
-                <img class="gif right" src="data/vids1/vid (8).gif">
-              </div>
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="gif left" src="data/collage1/img (9).jpg">
-                <img class="gif right" src="data/collage1/img (8).jpg">
-              </div>
-              <br><br>
-              <div class="img-wrapper2 clear">
-                <img class="img right" src="data/collage5/img (6).jpg">
-                <img class="img left" src="data/collage5/img (9).jpg">
-                <img class="img right" src="data/collage5/img (7).jpg">
-              </div>
-              <br><br>          
-              <div class="gif-wrapper clear">
-                <img class="gif right" src="data/vids1/vid (4).gif">
-              </div>
-              <br><br> 
-              <div class="img-wrapper2 clear">
-                <img class="img" src="data/collage6/img (1).jpg">
-                <img class="img" src="data/collage6/img (2).jpg">
-              </div>
-              <br><br>            
-            </div>
-                     
-            <div class="section2 subsection2">
-
-            <div class="model-wrapper clear">
-              <model-viewer class="model" style="height: 400px;" src="data/ceramics/3d_model/green_vase.glb" 
-              alt="Purple Bawl" ar ar-modes="webxr scene-viewer quick-look" 
-              camera-controls camera-orbit="-40deg 80deg" autoplay animation-controls></model-viewer>
-            </div>
-            <br><br>
-            <div class="img-wrapper clear">
-              <img class="img" src="data/drws/drws (6).jpeg">
-              <img class="img right" src="data/photography/ph (2).jpeg">
-            </div>
-            <br><br>
-            <div class="img-wrapper clear">
-              <img class="img" src="data/drws/drws (1).jpeg">
-            </div>
-            <br><br>
-            <div class="model-wrapper clear">
-              <model-viewer class="model" style="height: 200px;" src="data/ceramics/3d_model/purple_bawl.glb" 
-              alt="Purple Bawl" ar ar-modes="webxr scene-viewer quick-look" 
-              camera-controls camera-orbit="90deg 30deg" autoplay animation-controls></model-viewer>
-            </div>
-            <br><br>
-            <div class="img-wrapper2 clear">
-              <img class="img " src="data/photography/ph (3).png">
-              <img class="img right" src="data/photography/ph (4).png">
-            </div>
-            <br><br>
-            <div class="model-wrapper clear">
-              <model-viewer class="model" style="height: 400px;" src="data/ceramics/3d_model/cesto.glb" 
-              alt="Purple Bawl" ar ar-modes="webxr scene-viewer quick-look" 
-              camera-controls camera-orbit="-40deg 80deg" autoplay animation-controls></model-viewer>
-            </div>
-            <br><br>
-            <div class="img-wrapper clear">
-              <img class="img" src="data/drws/drws (11).png">
-              <img class="img right" src="data/drws/drws (12).PNG">
-            </div>
-            <br><br>
-            <div class="img-wrapper clear">
-            <img class="img" src="data/drws/drws (10).png">
-            </div>
-            <br><br>
-            <div class="img-wrapper clear">
-              <img class="img " src="data/photography/ph (7).JPG">
-            </div>
-            <br><br>
-            <div class="img-wrapper2 clear">
-              <img class="img " src="data/drws/drws (8).jpeg">
-              <img class="img right" src="data/drws/drws (7).jpg">
-            </div>
-            <br><br>          
-            <div class="gif-wrapper clear">
-              <img class="right" src="data/ceramics/ceramics (14).gif" height="400">
-            </div>
-            <br><br>
-            <div class="img-wrapper2 clear">
-              <img class="img " src="data/photography/ph (12).png">
-              <img class="img " src="data/photography/ph (10).png">
-              <img class="img right" src="data/photography/ph (11).png">
-            </div>           
-            <br><br>
-            <div class="img-wrapper clear">
-              <img class="img " src="data/photography/ph (8).JPG">
-            </div>
-            <br><br>
-            </div>
-
-            <div class="section2 subsection3">
-              
-              <div class="img-wrapper2">
-                <img class="img" src="data/photo/pol (8).jpg"> 
-              </div>
-              <br><br>
-              <div class="img-wrapper2 clear">
-                <img class="img left" src="data/photo/photo (11).JPG"> 
-                <img class="img left" src="data/photo/photo (12).JPG">  
-                <img class="img right" src="data/photo/photo (13).JPG">   
-              </div>
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="img" src="data/photo/photo (10).png"> 
-                <img class="img right" src="data/photo/photo (6).png">  
-              </div> 
-              <br><br> 
-              <div class="img-wrapper2 clear">
-                <img class="img" src="data/photo/pol (7).jpg"> 
-                <img class="img right" src="data/photo/pol (4).jpg"> 
-              </div>
-              <br><br>
-              <div class="img-wrapper clear">
-                <img class="img" src="data/photo/photo (5).JPG"> 
-                <img class="img right" src="data/photo/photo (7).JPG">   
-              </div>
-              <br><br>              
-              <div class="img-wrapper2 clear">
-                <img class="img" src="data/photo/photo (16).JPG"> 
-                <img class="img right" src="data/photo/photo (17).JPG">   
-              </div>
-              <br><br>            
-              <div class="img-wrapper clear">
-                <img class="img left" src="data/photo/photo (8).png">  
-                <img class="img right" src="data/photo/photo (9).png">  
-              </div> 
-              <br><br>
-              <div class="img-wrapper2 clear">
-                <img class="img" src="data/photo/photo (5).png">  
-              </div> 
-              <br><br>
-              <div class="img-wrapper">
-                <img class="img" src="data/photo/photo (18).JPG">  
-              </div>
-              <br><br>
-              <div class="img-wrapper">
-                <img class="img" src="data/photo/photo (14).JPG"> 
-                <img class="img right" src="data/photo/photo (15).JPG">   
-              </div>
-              <br><br>
-              <div class="img-wrapper2">
-                <img class="img left" src="data/photo/pol (1).jpg">  
-                <img class="img left" src="data/photo/pol (2).jpg"> 
-                <img class="img right" src="data/photo/pol (3).jpg">    
-              </div>
-              
-              <br><br>
-            </div>
-
-            <div class="section2 subsection4"> 
-              
-                (2024) <a href="" target="_blank">Orchestrating Embodied Connections with Pose Estimation and Interactive Movement Matching using Machine Learning</a> | Primett, W., Correia, N. N., Hieda, N., & Matos, A. | MODINA
-              <blockquote>
-                New methods for movement capture and modelling have inspired a shift in embodied interaction design. With machine learning tools being at the forefront of technical performance for goal-oriented movement sensing tasks, movement data modelling has been studied to support novel interaction paradigms informed by theories of embodiment.
-                By coupling two of these tools, we orchestrate a real-time interactive system based with the aim of dynamically learning from and recalling past movements.
-                Our main contributions begin with a technical outline for a system that leverages human pose estimation and similarity, from which we curate a dataset for movement matching.
-                We then provide an analysis of the user experiences that transpire in situ as an interactive installation, supporting design decisions related to fostering embodied connections with movement data in ways that are both interpersonal and intertemporal.
-              </blockquote> 
-
-              (2022) <a href="https://scholar.google.com/citations?view_op=view_citation&hl=pt-PT&user=0UkLBTMAAAAJ&citation_for_view=0UkLBTMAAAAJ:d1gkVwhDpl0C" target="_blank">On the Feeling of Acoustic and Visual Tension in Generative Art</a> | Computer Science Master's Thesis, Instituto Superior Técnico, ULisboa
-              <blockquote>
-              From a comprehensive literature review of generative art through the lenses of acoustics, visual art and their interrelation, accompanied by an exploration of tension from a psychological and creative standpoint, a context-aware bi-parted experiment was performed through an interactive application, with a focus on core visual and acoustic features. The acoustic aspects at study were waveform, attack, release, frequency and amplitude; the visual ones were symmetry, thickness, orientation, irregularity and angularity. User tests were conducted with 60 people with the aim to conclude on the impact of the various aspects on felt tension, with a focus on their paired interactions within each domain, as well as on tension's relation to arousal and valence. Our analysis shows clear associations between certain feature values and extreme levels of tension, high and low, as well as several two-way interactions between features, particularly among visual features; it also shows tension to be strongly positively correlated to arousal and strongly negatively correlated with valence. 
-              </blockquote>
-
-              <hr class="strong-hr">
-
-              (2024) <a href="https://www.academia.edu/127793257/Do_Labirinto_ao_Anjo" target="_blank">From the Labyrinth to the Angel: Body, Identity, and Technology in the Work of Maria Klonaris and Katerina Thomadaki</a> | Ciberculture, FCSH
-
-              <blockquote> This paper explores the work of Maria Klonaris and Katerina Thomadaki, focusing on <em>Double Labyrinthe</em> and <em>Le Cycle de l'Ange</em>, and their technological subversion of traditional narratives about the human and identity, proposing their relevance to contemporary issues. </blockquote>
-              (2024) <a href="https://www.academia.edu/127793235/A_Fic%C3%A7%C3%A3o_como_Borboleta_num_Ziguezaguear_pelas_Quest%C3%B5es_Contempor%C3%A2neas" target="_blank">Fiction as a Butterfly: Fluttering Through Contemporary Issues</a> | Contemporary Thought and Art, FCSH
-              
-              <blockquote> A commentary on the <em>State of the World – State of Art</em> cycle. The butterfly is proposed as a theoretical and aesthetic tool, a useful fiction, to reflect on contemporary dilemmas and their artistic manifestations. </blockquote>
-                <hr class="strong-hr">
-
-                (2024) untitled | visual essay at printed zine by <a href="https://www.instagram.com/thelimitsofthebody/" target="_blank">The Limits of The Body</a>, Edinburgh, GB
-                <blockquote>
-                  Personal exploration of the tensions between identity + perception, reflection + reality, of (im)materiality, through the complexities of cyberspace and the existential longing for unity.
-                </blockquote> 
-              <!--(2024) untitled | ensaio audiovisual, Ensaio Audiovisual, NOVA FCSH
-              <blockquote>
-                Personal exploration of the tensions between identity + perception, reflection + reality, of (im)materiality, through the complexities of cyberspace and the existential longing for unity.
-              </blockquote> 
-
-                 -->              
-                      
-            </div>
-
-            <div class="section2 subsection5"> 
-
-              
-              <div class="video-container">
-                <!-- Static picture instead of video -->
-                <img 
-                  src="data/films/borboleteando.PNG" 
-                  alt="Ox Video Thumbnail" 
-                  style="width:70%; height:auto;" 
-                  />
-                
-              <div class="video-description">
-                <h3>(2024) Aparecendo, Desaparecendo, Borboleteando</h3>
-                <p>
-                Audiovisual essay.</p>
-                
-              </div>
-            </div>
-            
-            <br><br><hr><br><br>
-
-              <div class="video-container">
-                <!-- Static picture instead of video -->
-                <img 
-                  src="data/films/Ox.jpeg" 
-                  alt="Ox Video Thumbnail" 
-                  style="width:70%; height:auto;" 
-                  />
-                
-              <div class="video-description">
-                <h3>(2024) {PRINT | PUNCH}</h3>
-                <p>
-                  A woman weaves among fibers and cables.</p>
-                <p>Experimental, Short, 8mm</p>
-                  Cast: Inês Margarida Correia | 
-                  Film Development: with assistance of Rita Ruivo | 
-                  Film Scanning: Ocho y Pico Lab
-                </p>
-              </div>
-            </div>
-            
-            <br><br><hr><br><br>
-
-              <div class="video-container">
-                <!--<iframe 
-                    src="https://player.vimeo.com/video/1016190423?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" 
-                    frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write" 
-                    style="width:100%; height:100%;" 
-                    title="outputs_fragmentos_reflexos"></iframe>
-                </div>-->
-                <!-- Static picture instead of video -->
-                <img 
-                src="data/films/fragments.PNG" 
-                alt="Ox Video Thumbnail" 
-                style="width:70%; height:auto;" 
-                />
-                <div class="video-description">
-                  <h3>(2024) outputs_fragmentos_reflexos</h3>
-                  <p>
-                    A blend of personal visuals captured over years of creative experimentation. 
-                    These are incomplete or abandoned works — a personal reflection on the cycle of trial, failure, 
-                    and reinvention. It explores the unfinished artefact as the essence of the process, as the end itself.
-                  </p>
+            <!-- LEFT PANE -->
+            <div class="leftpane">
+                <h2 id="name" onclick="show('')">Andreia Matos</h2>
+                <div class="nav-links">
+                    <p class="menu" onclick="show('section1'); scrollToTop();">* About</p>
+                    <p class="menu" onclick="show('section2'); scrollToTop();">* Work</p>
                 </div>
-              </div>
-              
-              <!--<div class="video-container">
-                <div class="video-wrapper">
-                  <iframe 
-                    src="https://player.vimeo.com/video/973083305?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" 
-                    frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write" 
-                    style="width:100%; height:100%;" 
-                    title="nomeiodoscorais (com Rita Ruivo)"></iframe>
-                </div>
-                <div class="video-description">
-                  <h3>nomeiodoscorais</h3>
-                  <p>A collaboration with <a href="https://www.instagram.com/ritaruivo/" target="_blank">Rita Ruivo</a>. 
-                  <p>This piece is a coded reinterpretation of homemade cine 
-                    darkroom crafts — a fantastical world leaking through its edges.
-                  </p>
-                </div>
-              </div>-->
-              
-
             </div>
 
-            
+            <!-- MIDDLE PANE -->
+            <div class="middlepane">
+                <div class="section1 content-div">
+                    <p>andreiangmatos@gmail.com</p>
+                    <p><a href="https://www.instagram.com/andreiangmatos/" target="_blank">instagram</a></p>  
+                </div>
+                <div class="section2 content-div">
+                    <p>Click and explore...</p>
+                    <p>[working on some of the links]</p>
+                </div>
+            </div>
+
+            <!-- RIGHT PANE -->
+            <div class="rightpane" id="rightpane">
                 
-          </div>
+                <!-- ABOUT SECTION -->
+                <div class="section1 content-div">
+                    <p>b. 1999, Viseu, Portugal | Based in Lisboa, Portugal</p>
+                    <p>,,,</p>
+                    <p>Artist, Engineer.</p>
+                    <p>,,,</p>
+                    
+                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Education</u></div>
+                    <div class="content">
+                        <p>(2024-Present) <b>MSc in Contemporary Culture and New Technologies</b><br>
+                        Faculdade de Ciências Sociais e Humanas (FCSH), Universidade Nova de Lisboa (NOVA)</p>
+                        <p>(2020-2022) <b>MSc in Computer Science and Engineering</b><br>
+                        Instituto Superior Técnico (IST), Universidade de Lisboa (UL)<br>
+                        <i>Specializations: Artificial Intelligence | Computer Graphics</i></p>
+                        <p>+ <b>Erasmus Exchange Programme</b><br>
+                        ENSIMAG, Université Grenoble Alpes (UGA), Grenoble, France</p>
+                        <p>(2017-2020) <b>BSc in Computer Science and Engineering</b><br>
+                        Instituto Superior Técnico (IST), Universidade de Lisboa (UL)</p>
+                    </div>
+
+                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Experience</u></div>
+                    <div class="content">
+                        <p>(01.2023-Present) <b>Data Scientist</b> — <b>Nokia</b>, Lisboa, Portugal</p>
+                        <p>(12.2023-03.2024) <b>Research Assistant</b> — <b>Tallinn University (TLU)</b>, Estonia</p>
+                        <p>(03.2022-07.2022) <b>Invited Teaching Assistant</b> — <b>IST</b>, Lisboa</p>
+                        <p>(09.2021-10.2022) <b>Research Intern</b> — <b>INESC-ID</b>, Lisboa</p>
+                    </div>
+
+                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Cultural Projects</u></div>
+                    <div class="content">
+                        <p>(2024, 2025) <b>Programming Team</b> — Olhares do Mediterrâneo</p>
+                        <p>(2022, 2023) <b>Production Support</b> — Doclisboa</p>
+                        <p>(2022) <b>Production Support</b> — Queer Lisboa</p>
+                        <p>(2020-2022) <b>Co-Founder</b> — Kino Kave Cineclub</p>
+                    </div>
+                </div>
+
+                <!-- WORK CONSTELLATION -->
+                <div class="section2 content-div constellation-container">
+                    
+                    <a href="https://andreianmatos.github.io/ceramics" target="_blank" class="scatter-item size-l">
+                        <img src="work/ceramics.png" alt="Ceramics">
+                        <span class="work-label">Ceramics</span>
+                    </a> 
+
+                    <div class="scatter-item size-s">
+                         <img src="work/images.png" alt="Images">
+                         <span class="work-label">Images</span>
+                    </div>
+
+                    <div class="scatter-item size-l">
+                        <img src="work/drawings.png" alt="Drawings">
+                        <span class="work-label">Drawings</span>
+                    </div>
+
+                    <a href="https://www.youtube.com/@blasees" target="_blank" class="scatter-item size-m">
+                        <img src="work/videos.gif" alt="Ceramics">
+                        <span class="work-label">Videos</span>
+                    </a> 
+
+                    <div class="scatter-item size-l">
+                         <img src="work/books.png" alt="Books">
+                         <span class="work-label">Artist Books</span>
+                    </div>
+
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
 
-    </body>
+</body>
 </html>
