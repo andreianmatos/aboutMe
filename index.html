@@ -14,14 +14,19 @@
 </head>
 <body>
 
+    <!-- HOME PAGE ANIMATION STAGE -->
+    <div id="home-stage">
+        <div id="doodles-layer"></div>
+        <div id="drawings-layer"></div>
+    </div>
+
     <div class="container">
         <div class="d-flex">
 
             <!-- LEFT PANE -->
             <div class="leftpane">
-                <h2 id="name" onclick="show(''); scrollToTop();">Andreia Matos</h2>
+                <h2 id="name" onclick="show('home'); scrollToTop();">Andreia Matos</h2>
                 <div class="nav-links">
-                    <!-- IDs added, asterisks removed -->
                     <p id="nav-about" class="menu" onclick="show('section1'); scrollToTop();">About</p>
                     <p id="nav-work" class="menu" onclick="show('section2'); scrollToTop();">Work</p>
                 </div>
@@ -46,12 +51,13 @@
                 <div class="section1 content-div">
                     <p>b. 1999, Viseu, Portugal | Based in Lisboa, Portugal</p>
                     <p>,,,</p>
-                    <p>.</p>
+                    <p>Maker of things; sometimes good at thinking + feeling. <br>
+                    Things I can make: images, videos, ceramics, websites, scripts, texts, books,</p>
                     <p>,,,</p>
                     
                     <div class="collapsible" onclick="toggleCollapsible(this)"><u>Education</u></div>
                     <div class="content">
-                        <p>(2024-Present) <b>MSc in Contemporary Culture and New Technologies</b><br>
+                        <p>(2024-2025) <b>Post-Graduation in Communication Sciences: Contemporary Culture and New Technologies</b><br>
                         Faculdade de Ciências Sociais e Humanas (FCSH), Universidade Nova de Lisboa (NOVA)</p>
                         <p>(2020-2022) <b>MSc in Computer Science and Engineering</b><br>
                         Instituto Superior Técnico (IST), Universidade de Lisboa (UL)<br>
@@ -62,16 +68,26 @@
                         Instituto Superior Técnico (IST), Universidade de Lisboa (UL)</p>
                     </div>
 
-                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Experience</u></div>
+                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Residencies + Workshops</u></div>
+                    <div class="content"> 
+                        <p>(2025) <b>Alternative Dreams</b><br>
+                        Alternative photographic printing processes<br>
+                        Imagerie - Casa de Imagens Lisboa, Portugal</p>
+                        <p>(2025) <b>Provisional School for Nothing</b><br>
+                        Associação Provisória, Sabóia, Portugal</p>
+                        <p>(2024) <b>Classical Bookbinding Workshop</b><br>
+                        Artlier, Lisboa, Portugal</p>
+                        <p>(2023) <b>Ceramics Club</b><br>
+                        Corrente, Lisboa, Portugal</p>
+                    </div>
+
+                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Work Experience</u></div>
                     <div class="content">
-                        <p>(01.2023-Present) <b>Data Scientist</b> — <b>Nokia</b>, Lisboa, Portugal</p>
+                        <p>(01.2023-Present) <b>Machine Learning Engineer</b> — <b>Nokia</b>, Lisboa, Portugal</p>
                         <p>(12.2023-03.2024) <b>Research Assistant</b> — <b>Tallinn University (TLU)</b>, Estonia</p>
                         <p>(03.2022-07.2022) <b>Invited Teaching Assistant</b> — <b>IST</b>, Lisboa</p>
                         <p>(09.2021-10.2022) <b>Research Intern</b> — <b>INESC-ID</b>, Lisboa</p>
-                    </div>
-
-                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Cultural Projects</u></div>
-                    <div class="content">
+                        +
                         <p>(2024, 2025) <b>Programming Team</b> — Olhares do Mediterrâneo</p>
                         <p>(2022, 2023) <b>Production Support</b> — Doclisboa</p>
                         <p>(2022) <b>Production Support</b> — Queer Lisboa</p>
@@ -79,34 +95,28 @@
                     </div>
                 </div>
 
-                <!-- WORK CONSTELLATION -->
+                <!-- WORK SECTION -->
                 <div class="section2 content-div constellation-container">
-                    
                     <a href="https://andreianmatos.github.io/ceramics" target="_blank" class="scatter-item size-l">
                         <img src="work/ceramics.png" alt="Ceramics">
                         <span class="work-label">Ceramics</span>
                     </a> 
-
                     <div class="scatter-item size-s">
                          <img src="work/images.png" alt="Images">
                          <span class="work-label">Images</span>
                     </div>
-
                      <a href="https://andreianmatos.github.io/drawings" target="_blank" class="scatter-item size-l">
                         <img src="work/drawings.png" alt="Drawings">
                         <span class="work-label">Drawings</span>
                      </a>
-
                     <a href="https://www.youtube.com/@blasees" target="_blank" class="scatter-item size-m">
-                        <img src="work/videos.gif" alt="Ceramics">
+                        <img src="work/videos.gif" alt="Videos">
                         <span class="work-label">Videos</span>
                     </a> 
-
                     <div class="scatter-item size-l">
                          <img src="work/books.png" alt="Books">
                          <span class="work-label">Artist Books</span>
                     </div>
-
                 </div>
             </div>
         </div>

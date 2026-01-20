@@ -3,165 +3,98 @@
 ::-webkit-scrollbar-track { background: #e8e4db; }
 ::-webkit-scrollbar-thumb { background: black; }
 
-/* --- BASE SETTINGS --- */
-body {
-    margin: 0;
+body, html {
+    margin: 0; padding: 0;
     font-family: "Archivo Narrow", sans-serif;
     background-color: #f4f1ea;
     background-image: radial-gradient(#ddd9ce 1.2px, transparent 1.2px);
     background-size: 24px 24px;
     color: black;
-    overflow-x: hidden; 
+    overflow: hidden; /* Prevent background scroll */
+    height: 100vh;
 }
 
-/* HIDE BY DEFAULT */
-.content-div { 
-    display: none; 
+/* --- HOME STAGE --- */
+#home-stage {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    z-index: 1;
+    pointer-events: none;
 }
 
-/* SHOW ONLY WHEN CLASS IS ADDED */
-.content-div.is-visible { 
-    display: block; 
+#home-stage.dimmed {
+    filter: blur(12px) grayscale(0.5);
+    opacity: 0.3;
 }
 
-.container { width: 100%; }
+/* DRAGGABLE ITEMS */
+.drawing-item {
+    position: absolute;
+    cursor: grab;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.8s, transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+    pointer-events: auto; /* ALLOW GRABBING */
+    z-index: 500; /* Must be high enough */
+    touch-action: none;
+}
+.drawing-item.appeared { opacity: 1; transform: scale(1); }
+.drawing-item canvas { width: 100%; display: block; }
+
+.doodle {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* --- LAYOUT PANES --- */
+.container { position: relative; z-index: 1000; width: 100%; height: 100vh; pointer-events: none; }
 .d-flex { display: flex; width: 100%; height: 100vh; }
 
-.leftpane { width: 26%; height: 100vh; padding: 5%; position: sticky; top: 0; box-sizing: border-box; }
-.middlepane { width: 25%; height: 100vh; padding: 5%; position: sticky; top: 0; box-sizing: border-box; }
-.rightpane { width: 49%; height: 100vh; padding: 5%; overflow-y: auto; position: relative; box-sizing: border-box; }
+/* Panes themselves don't block the mouse */
+.leftpane, .middlepane, .rightpane { pointer-events: none; height: 100vh; box-sizing: border-box; }
+.leftpane { width: 26%; padding: 5%; }
+.middlepane { width: 25%; padding: 5%; }
+.rightpane { width: 49%; padding: 5%; overflow-y: auto; }
 
-/* --- UPDATED NAVIGATION STYLING --- */
+/* Interactive elements inside the panes */
+#name, .menu, a, .collapsible, .scatter-item { pointer-events: auto; }
 
-/* Keeps your original font size and bold weight */
-#name { 
-    font-size: 2.1vw; 
-    line-height: 1; 
-    margin: 0 0 40px 0; 
-    cursor: pointer; 
-    font-weight: 700; 
+/* The visible content block in the right pane captures mouse for scrolling/clicking */
+.content-div.is-visible { 
+    pointer-events: auto; 
+    display: block; 
 }
+.content-div { display: none; }
 
-.menu { 
-    cursor: pointer; 
-    color: black; 
-    margin: 15px 0 15px 20px; /* Added 20px margin to the LEFT */
-    font-weight: 700; 
-    opacity: 0.25; 
-    transition: opacity 0.3s ease;
-    text-transform: none; 
-    position: relative;
-    width: fit-content;
-}
+#name { font-size: 2.1vw; margin: 0 0 40px 0; cursor: pointer; font-weight: 700; pointer-events: auto; text-shadow: 2px 2px 6px rgba(244, 241, 234, 0.9), -1px -1px 3px rgba(244, 241, 234, 0.9); }
+.menu { cursor: pointer; margin: 15px 0 15px 20px; font-weight: 700; opacity: 0.25; transition: 0.3s; position: relative; width: fit-content; pointer-events: auto; color: black; text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9), -1px -1px 4px rgba(255, 255, 255, 0.9), 0 0 10px rgba(255, 255, 255, 0.8); }
+.menu.active { opacity: 1; color: black; text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9), -1px -1px 4px rgba(255, 255, 255, 0.9), 0 0 10px rgba(255, 255, 255, 0.8); }
+.menu.active::before { content: '*'; position: absolute; left: -16px; top: 0; }
 
-/* NEW: Active state (Full color) */
-.menu.active { 
-    opacity: 1; 
-}
-
-/* NEW: The Asterisk (matches ceramics logic) */
-.menu.active::before { 
-    content: '*'; 
-    position: absolute; 
-    left: -16px; 
-    top: 0; 
-}
-
-/* --- PC WORK LAYOUT --- */
+/* Constellation restored */
 .constellation-container { position: relative; width: 100%; height: 80vh; }
-
-.scatter-item {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1);
-}
-
-.scatter-item img { width: 100%; height: auto; display: block; }
-
-.work-label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(244, 241, 234, 0.9);
-    padding: 2px 8px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    white-space: nowrap;
-}
-
+.scatter-item { position: absolute; display: flex; align-items: center; justify-content: center; transition: transform 0.5s; cursor: pointer; }
+.scatter-item img { width: 100%; height: auto; display: block; object-fit: contain; }
+.work-label { position: absolute; background: rgba(244, 241, 234, 0.9); padding: 2px 8px; font-weight: 700; opacity: 0; transition: 0.3s; pointer-events: none; }
 .scatter-item:hover .work-label { opacity: 1; }
-.scatter-item:hover { transform: scale(1.1) rotate(0deg) !important; z-index: 100; }
+.size-s { width: 100px; } .size-m { width: 170px; } .size-l { width: 240px; }
 
-.size-s { width: 100px; }
-.size-m { width: 170px; }
-.size-l { width: 240px; }
+/* CV Content restored */
+.collapsible { cursor: pointer; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.1); font-weight: 700; text-decoration: underline; }
+.content { display: none; padding: 15px 0; line-height: 1.4; }
+a { color: black; text-decoration: underline; pointer-events: auto; }
 
-/* --- CV SETTINGS --- */
-.collapsible { cursor: pointer; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.1); display: block; font-weight: 700; }
-.content { display: none; padding: 15px 0; font-size: 1em; line-height: 1.4; }
-a { color: black; text-decoration: underline; }
-
-/* --- MOBILE & TABLET --- */
-/* --- MOBILE & TABLET --- */
 @media screen and (max-width: 800px) {
-    body { overflow-y: auto; }
-    
+    body, html { overflow-y: auto; height: auto; }
+    .container { height: auto; }
     .d-flex { display: block; height: auto; }
-
-    /* Added .leftpane here so it takes full width on mobile */
-    .leftpane, .middlepane, .rightpane { 
-        width: 100%; 
-        height: auto; 
-        position: relative; 
-        padding: 30px 25px; /* Enough padding for the asterisk */
-        box-sizing: border-box;
-    }
-
-    #name { 
-        font-size: 1.5rem; 
-        white-space: nowrap; /* Forces name to stay on one line */
-        margin-bottom: 20px;
-    }
-
-    /* Adjusting menu spacing for mobile */
-    .menu {
-        margin: 12px 0 12px 20px; 
-    }
-
-    .menu.active::before { 
-        left: -18px; 
-    }
-
-    /* ONLY CENTER THE WORK PNGs WHEN VISIBLE */
-    .constellation-container.is-visible { 
-        display: flex;
-        flex-direction: column;
-        align-items: center; 
-        gap: 50px;
-        height: auto;
-        padding-bottom: 50px;
-    }
-
-    .scatter-item { 
-        position: relative !important; 
-        left: 0 !important; 
-        top: 0 !important; 
-        transform: none !important; 
-        width: 85% !important; 
-        max-width: 300px;
-        margin: 0 auto; 
-    }
-
-    .work-label { 
-        opacity: 1 !important; 
-        background: rgba(244, 241, 234, 0.95);
-        padding: 5px 12px;
-    }
+    .leftpane, .middlepane, .rightpane { width: 100%; height: auto; padding: 30px 25px; pointer-events: auto; }
+    #name { font-size: 1.5rem; }
+    #home-stage { display: none; } /* Hide background drawings on mobile */
 }
