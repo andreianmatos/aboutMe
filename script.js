@@ -11,7 +11,10 @@ function getCDNUrl(relativePath) {
     // Remove leading slash if present
     const cleanPath = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
     const fullUrl = `${productionDomain}/${cleanPath}`;
-    return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}`;
+    const cdnUrl = `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}`;
+    console.log(`[CDN] Generated CDN URL for ${relativePath}: ${cdnUrl}`);
+    console.log(`[CDN] Original URL: ${fullUrl}`);
+    return cdnUrl;
 }
 
 // Helper function to load image with CDN fallback
@@ -19,7 +22,10 @@ function loadImageWithCDN(imgElement, relativePath) {
     // Original URL is already set in src attribute, so it will load immediately
     // Try to upgrade to CDN in the background
     const cdnUrl = getCDNUrl(relativePath);
-    console.log(`[CDN] Attempting to load: ${relativePath} via CDN: ${cdnUrl}`);
+    const originalUrl = imgElement.src;
+    console.log(`[CDN] Attempting to load: ${relativePath}`);
+    console.log(`[CDN] Original URL: ${originalUrl}`);
+    console.log(`[CDN] CDN URL: ${cdnUrl}`);
     
     // Test CDN URL
     const testImg = new Image();
@@ -28,9 +34,11 @@ function loadImageWithCDN(imgElement, relativePath) {
         console.log(`[CDN] ✓ Successfully loaded via CDN: ${relativePath}`);
         imgElement.src = cdnUrl;
     };
-    testImg.onerror = () => {
+    testImg.onerror = (e) => {
         // CDN failed, keep original src (already loaded)
         console.warn(`[CDN] ✗ Failed to load via CDN, using original: ${relativePath}`);
+        console.warn(`[CDN] Error details:`, e);
+        console.warn(`[CDN] Falling back to: ${originalUrl}`);
     };
     testImg.src = cdnUrl;
 }
@@ -56,7 +64,15 @@ async function initDoodles() {
         const url = isProduction ? getCDNUrl(originalUrl) : originalUrl;
         if (isProduction) console.log(`[CDN] Loading doodle ${i} via CDN: ${url}`);
         const found = await new Promise(res => {
-            img.onload = () => res(true); img.onerror = () => res(false); img.src = url;
+            img.onload = () => {
+                if (isProduction) console.log(`[CDN] ✓ Doodle ${i} loaded successfully via CDN`);
+                res(true);
+            };
+            img.onerror = () => {
+                if (isProduction) console.warn(`[CDN] ✗ Doodle ${i} failed to load via CDN`);
+                res(false);
+            };
+            img.src = url;
         });
         if (found) existing.push(i);
     }
@@ -96,7 +112,15 @@ async function initFloating() {
         const url = isProduction ? getCDNUrl(originalUrl) : originalUrl;
         if (isProduction) console.log(`[CDN] Loading draggable item ${i} via CDN: ${url}`);
         const found = await new Promise(res => {
-            img.onload = () => res(true); img.onerror = () => res(false); img.src = url;
+            img.onload = () => {
+                if (isProduction) console.log(`[CDN] ✓ Draggable item ${i} loaded successfully via CDN`);
+                res(true);
+            };
+            img.onerror = () => {
+                if (isProduction) console.warn(`[CDN] ✗ Draggable item ${i} failed to load via CDN`);
+                res(false);
+            };
+            img.src = url;
         });
         if (found) existing.push(i);
     }
