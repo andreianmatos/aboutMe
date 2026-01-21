@@ -34,10 +34,14 @@ body, html {
     cursor: grab;
     opacity: 0;
     transform: scale(0.8);
-    transition: opacity 0.8s, transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+    transition: opacity 0.8s, transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), cursor 0.3s;
     pointer-events: auto; /* ALLOW GRABBING */
     z-index: 500; /* Must be high enough */
     touch-action: none;
+}
+#home-stage.dimmed .drawing-item {
+    cursor: default;
+    pointer-events: none;
 }
 .drawing-item.appeared { opacity: 1; transform: scale(1); }
 .drawing-item canvas { width: 100%; display: block; }
@@ -85,6 +89,15 @@ body, html {
 .scatter-item:hover .work-label { opacity: 1; }
 .size-s { width: 100px; } .size-m { width: 170px; } .size-l { width: 240px; }
 
+/* Websites section */
+.websites-section { position: absolute; display: inline-block; }
+.sticky-note-wrapper { position: relative; display: inline-block; }
+.sticky-note-img { width: 280px; height: auto; display: block; }
+.sticky-note-title { position: absolute; top: 25px; left: 30px; margin: 0; font-weight: 700; text-align: left; white-space: nowrap; font-size: 0.9em; }
+.website-links { position: absolute; top: 60px; left: 40px; text-align: left; font-size: 0.85em; }
+.website-links p { margin: 8px 0; }
+.website-links a { color: black; text-decoration: underline; }
+
 /* CV Content restored */
 .collapsible { cursor: pointer; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.1); font-weight: 700; text-decoration: underline; }
 .content { display: none; padding: 15px 0; line-height: 1.4; }
@@ -97,4 +110,47 @@ a { color: black; text-decoration: underline; pointer-events: auto; }
     .leftpane, .middlepane, .rightpane { width: 100%; height: auto; padding: 30px 25px; pointer-events: auto; }
     #name { font-size: 1.5rem; }
     #home-stage { display: none; } /* Hide background drawings on mobile */
+    
+    /* Work section - vertical stacking on mobile */
+    .constellation-container { 
+        position: relative; 
+        height: auto; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 30px; 
+        padding: 20px 0; 
+    }
+    .scatter-item { 
+        position: relative !important; 
+        left: auto !important; 
+        top: auto !important; 
+        transform: none !important; 
+        margin: 0 auto; 
+    }
+    .websites-section { 
+        position: relative !important; 
+        left: auto !important; 
+        top: auto !important; 
+        transform: none !important; 
+        margin: 20px auto 0; 
+        display: flex;
+        justify-content: center;
+    }
+    .sticky-note-img { 
+        width: 200px !important; 
+    }
+    .sticky-note-title { 
+        font-size: 0.8em !important; 
+        top: 18px !important; 
+        left: 20px !important; 
+    }
+    .website-links { 
+        top: 45px !important; 
+        left: 25px !important; 
+        font-size: 0.75em !important; 
+    }
+    .website-links p { 
+        margin: 10px 0 !important; 
+    }
 }
