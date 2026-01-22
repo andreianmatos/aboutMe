@@ -1,6 +1,6 @@
 const CONFIG = {
     pieces: { minToLoad: 3, maxToLoad: 5, minScale: 0.15, maxScale: 0.20 },
-    doodles: { minToShow: 6, maxToShow: 9, minScale: 0.35, maxScale: 1.0, minOpacity: 0.15, maxOpacity: 0.3 },
+    doodles: { minToShow: 6, maxToShow: 9, minScale: 0.3, maxScale: 0.6, minOpacity: 0.15, maxOpacity: 0.3 },
     paths: { items: 'main/items/', doodles: 'main/' }
 };
 
@@ -52,9 +52,6 @@ function isMobile() {
 
 // INITIALIZE BACKGROUND DOODLES (main/1.png - main/13.png)
 async function initDoodles() {
-    // Hide drawings on mobile for better UX
-    if (isMobile()) return;
-    
     const isProduction = window.location.hostname === 'andreiamatos.xyz' || window.location.hostname.includes('github.io');
     const layer = document.getElementById('doodles-layer');
     const existing = [];
@@ -85,9 +82,40 @@ async function initDoodles() {
         d.style.backgroundImage = `url(${imageUrl})`;
         const img = new Image(); img.src = imageUrl;
         img.onload = () => {
-            let scale = CONFIG.doodles.minScale + Math.random() * (CONFIG.doodles.maxScale - CONFIG.doodles.minScale);
+            // Calculate minimum scale to fill screen (at least screen width or height)
+            const screenMin = Math.min(window.innerWidth, window.innerHeight);
+            const minScaleForScreen = Math.max(
+                screenMin / img.naturalWidth,
+                screenMin / img.naturalHeight
+            );
+            
+            // Calculate maximum scale proportional to image size (smaller overall)
+            // Larger images can scale more, smaller images scale less
+            const screenMax = Math.max(window.innerWidth, window.innerHeight);
+            const imageArea = img.naturalWidth * img.naturalHeight;
+            const screenArea = window.innerWidth * window.innerHeight;
+            
+            // Base scale factor: larger images relative to screen can scale more
+            const sizeRatio = imageArea / screenArea;
+            // Scale factor: images that are already large relative to screen can scale up more (reduced multiplier)
+            const proportionalMaxScale = Math.min(
+                (screenMax * (1.2 + sizeRatio * 0.3)) / img.naturalWidth,
+                (screenMax * (1.2 + sizeRatio * 0.3)) / img.naturalHeight
+            );
+            
+            // Use random scale proportional to image size, but ensure it's within bounds
+            // Larger images get higher max scale from config
+            const baseMaxScale = CONFIG.doodles.maxScale;
+            const imageBasedMaxScale = Math.min(baseMaxScale * (1 + sizeRatio * 0.2), proportionalMaxScale);
+            const randomScale = CONFIG.doodles.minScale + Math.random() * (imageBasedMaxScale - CONFIG.doodles.minScale);
+            let scale = Math.max(randomScale, minScaleForScreen);
+            scale = Math.min(scale, proportionalMaxScale); // Cap maximum size
+            
             let w = img.naturalWidth * scale;
-            d.style.width = w + "px"; d.style.height = (w * (img.naturalHeight / img.naturalWidth)) + "px";
+            let h = img.naturalHeight * scale;
+            
+            d.style.width = w + "px"; 
+            d.style.height = h + "px";
             // Position randomly anywhere on screen
             d.style.left = Math.random() * (window.innerWidth - w) + "px";
             d.style.top = Math.random() * (window.innerHeight - w) + "px";
@@ -100,9 +128,6 @@ async function initDoodles() {
 
 // INITIALIZE DRAGGABLE PIECES (main/items/1.png - main/items/10.png)
 async function initFloating() {
-    // Hide draggable pieces on mobile for better UX
-    if (isMobile()) return;
-    
     const isProduction = window.location.hostname === 'andreiamatos.xyz' || window.location.hostname.includes('github.io');
     const layer = document.getElementById('drawings-layer');
     const existing = [];
@@ -130,7 +155,18 @@ async function initFloating() {
         const img = new Image(); img.src = isProduction ? getCDNUrl(originalUrl) : originalUrl;
         img.onload = () => {
             const el = createPieceElement(img, layer);
-            setTimeout(() => el.classList.add('appeared'), index * 150);
+            // On mobile, show immediately; on desktop, stagger appearance
+            if (isMobile()) {
+                el.classList.add('appeared');
+                // Force visibility on mobile - preserve position transform
+                el.style.opacity = '1';
+                // Don't override transform here - it's already set with position in createPieceElement
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+                console.log(`[Mobile] Draggable item ${id} created and made visible at transform: ${el.style.transform}`);
+            } else {
+                setTimeout(() => el.classList.add('appeared'), index * 150);
+            }
         };
     });
 }
@@ -147,11 +183,31 @@ function createPieceElement(imgObj, parent) {
     let w = window.innerWidth * scale;
     container.style.width = w + "px";
 
-    // Position randomly anywhere on screen
-    const item = { el: container, x: Math.random() * (window.innerWidth - w), y: Math.random() * (window.innerHeight - w), vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, isDragging: false };
+    // Position randomly anywhere on screen, ensure it fits on mobile
+    const maxX = Math.max(10, window.innerWidth - w - 10);
+    const maxY = Math.max(10, window.innerHeight - w - 10);
+    const item = { 
+        el: container, 
+        x: Math.random() * maxX + 10, 
+        y: Math.random() * maxY + 10, 
+        vx: (Math.random() - 0.5) * 0.4, 
+        vy: (Math.random() - 0.5) * 0.4, 
+        isDragging: false 
+    };
+    
+    // Ensure initial position is set immediately with proper transform
+    container.style.position = 'absolute';
+    container.style.left = '0';
+    container.style.top = '0';
+    // Set initial transform - scale will be handled by CSS transition
+    container.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
+    
+    if (isMobile()) {
+        console.log(`[Mobile] Item positioned at x: ${item.x}, y: ${item.y}, width: ${w}, transform: ${container.style.transform}`);
+    }
 
     container.onpointerdown = (e) => {
-        if (isPaused) return; // Don't allow dragging when paused (About/Work sections are open)
+        if (isPaused) return; // Don't allow dragging when paused
         item.isDragging = true;
         container.setPointerCapture(e.pointerId);
         item.dragOffsetX = e.clientX - item.x;
@@ -171,14 +227,9 @@ function createPieceElement(imgObj, parent) {
 }
 
 function updatePhysics() {
-    // Skip physics on mobile
-    if (isMobile()) {
-        requestAnimationFrame(updatePhysics);
-        return;
-    }
-    
     const bufferZone = 50; // Soft buffer zone for smoother transitions
     
+    // Ensure all items are positioned and visible
     floatingItems.forEach(item => {
         if (!item.isDragging && !isPaused) {
             // Apply velocity
@@ -231,7 +282,10 @@ function updatePhysics() {
                 item.vy += (Math.random() - 0.5) * 0.1;
             }
         }
-        item.el.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
+        // Always update position - use translate3d for smooth animation
+        if (item.el && item.el.style) {
+            item.el.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
+        }
     });
     requestAnimationFrame(updatePhysics);
 }
@@ -342,5 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // If not production, images will use their original src (already set in HTML)
     
-    initDoodles(); initFloating(); updatePhysics();
+    initDoodles(); 
+    // initFloating(); // Disabled - user doesn't want floating items
+    // updatePhysics(); // Only needed for floating items
 });

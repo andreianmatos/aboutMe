@@ -38,12 +38,16 @@ body, html {
     pointer-events: auto; /* ALLOW GRABBING */
     z-index: 500; /* Must be high enough */
     touch-action: none;
+    will-change: transform; /* Optimize for animation */
 }
 #home-stage.dimmed .drawing-item {
     cursor: default;
     pointer-events: none;
 }
-.drawing-item.appeared { opacity: 1; transform: scale(1); }
+.drawing-item.appeared { 
+    opacity: 1; 
+    transform: scale(1);
+}
 .drawing-item canvas { width: 100%; display: block; }
 
 .doodle {
@@ -91,6 +95,12 @@ body, html {
 
 /* Websites section */
 .websites-section { position: absolute; display: inline-block; }
+
+/* Hide work items when work section is not visible */
+.section2.content-div:not(.is-visible) .scatter-item,
+.section2.content-div:not(.is-visible) .websites-section {
+    display: none !important;
+}
 .sticky-note-wrapper { position: relative; display: inline-block; }
 .sticky-note-img { width: 280px; height: auto; display: block; }
 .sticky-note-title { position: absolute; top: 25px; left: 30px; margin: 0; font-weight: 700; text-align: left; white-space: nowrap; font-size: 0.9em; }
@@ -109,7 +119,22 @@ a { color: black; text-decoration: underline; pointer-events: auto; }
     .d-flex { display: block; height: auto; }
     .leftpane, .middlepane, .rightpane { width: 100%; height: auto; padding: 30px 25px; pointer-events: auto; }
     #name { font-size: 1.5rem; }
-    #home-stage { display: none; } /* Hide background drawings on mobile */
+    /* Keep background drawings visible on mobile, same as desktop */
+    #home-stage { 
+        display: block !important; /* Ensure home-stage is visible */
+        position: fixed !important;
+        z-index: 100 !important; /* Above background but below content when needed */
+    }
+    .drawing-item {
+        opacity: 1 !important; /* Make sure items are visible on mobile */
+        display: block !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        z-index: 1001 !important; /* Above content container (z-index: 1000) */
+    }
+    .drawing-item.appeared {
+        opacity: 1 !important;
+    }
     
     /* Work section - vertical stacking on mobile */
     .constellation-container { 
@@ -127,6 +152,15 @@ a { color: black; text-decoration: underline; pointer-events: auto; }
         top: auto !important; 
         transform: none !important; 
         margin: 0 auto; 
+        display: block !important;
+    }
+    .work-label {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        opacity: 1 !important;
+        z-index: 10 !important;
     }
     .websites-section { 
         position: relative !important; 
@@ -134,7 +168,7 @@ a { color: black; text-decoration: underline; pointer-events: auto; }
         top: auto !important; 
         transform: none !important; 
         margin: 20px auto 0; 
-        display: flex;
+        display: flex !important;
         justify-content: center;
     }
     .sticky-note-img { 
