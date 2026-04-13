@@ -1,190 +1,417 @@
 /* --- SCROLLBARS --- */
-::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: #e8e4db; }
 ::-webkit-scrollbar-thumb { background: black; }
 
+:root {
+    /* Tipografia fluida: corpo único; escala com vw + vh */
+    --fs-fluid-body: clamp(0.82rem, 0.42rem + 0.85vw + 0.55vh, 1.28rem);
+    --fs-fluid-hint: clamp(0.74rem, 0.66rem + 0.35vw + 0.2vh, 0.95rem);
+    /* Entrelinhas: pretext mede line-height no JS — manter alinhado aqui */
+    --lh-pretext: 1.86;
+    --lh-body: 1.58;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body, html {
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
     font-family: "Archivo Narrow", sans-serif;
+    font-weight: 400;
+    font-size: var(--fs-fluid-body);
+    line-height: var(--lh-body);
     background-color: #f4f1ea;
     background-image: radial-gradient(#ddd9ce 1.2px, transparent 1.2px);
     background-size: 24px 24px;
-    color: black;
-    overflow: hidden; /* Prevent background scroll */
-    height: 100vh;
+    background-attachment: fixed;
+    color: #0a0a0a;
+    min-height: 100%;
+    min-height: 100dvh;
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
-/* --- HOME STAGE --- */
-#home-stage {
+/* Home: sem scroll com painéis fechados; scroll quando CV ou Contact está aberto */
+body.page-home:not(.cv-open):not(.contact-open) {
+    overflow-y: hidden;
+    height: 100%;
+    height: 100dvh;
+}
+
+body.page-home.cv-open,
+body.page-home.contact-open {
+    overflow-y: auto;
+    height: auto;
+    min-height: 100dvh;
+    /* Corpo é o scroll container; suave + relayout Pretext empilham jank */
+    scroll-behavior: auto;
+}
+
+#drawings-layer {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100vh;
-    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 900;
     pointer-events: none;
 }
-
-#home-stage.dimmed {
-    filter: blur(12px) grayscale(0.5);
-    opacity: 0.3;
+#drawings-layer .drawing-item {
+    pointer-events: auto;
 }
 
-/* DRAGGABLE ITEMS */
 .drawing-item {
     position: absolute;
+    left: 0;
+    top: 0;
     cursor: grab;
     opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.8s, transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), cursor 0.3s;
-    pointer-events: auto; /* ALLOW GRABBING */
-    z-index: 500; /* Must be high enough */
+    transition: opacity 0.45s ease;
     touch-action: none;
-    will-change: transform; /* Optimize for animation */
+    will-change: transform;
+    filter: drop-shadow(0 3px 14px rgba(0, 0, 0, 0.14));
 }
-#home-stage.dimmed .drawing-item {
-    cursor: default;
+.drawing-item.appeared {
+    opacity: 1;
+}
+.drawing-item:active {
+    cursor: grabbing;
+}
+.drawing-item img {
+    width: 100%;
+    height: auto;
+    display: block;
     pointer-events: none;
 }
-.drawing-item.appeared { 
-    opacity: 1; 
-    transform: scale(1);
-}
-.drawing-item canvas { width: 100%; display: block; }
 
-.doodle {
+img {
+    border: 0;
+    outline: none;
+}
+
+.site-chrome {
+    position: relative;
+    z-index: 1000;
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding: clamp(1rem, 4vh, 2.5rem) clamp(0.65rem, 3vw, 1.5rem) clamp(2rem, 6vh, 4rem);
+    pointer-events: none;
+}
+
+.text-block {
+    pointer-events: none;
+    width: 100%;
+    max-width: none;
+    flex: 1 1 auto;
+    margin: 0;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Só alvos explícitos: o painel inteiro com pointer-events:auto bloqueava arrastar as imagens por baixo. */
+.text-block a,
+.text-block button,
+.text-block .collapsible {
+    pointer-events: auto;
+}
+
+.text-block .cv-close-hint,
+.text-block .pretext-bundle {
+    pointer-events: none;
+}
+
+.text-block .pretext-line-row {
+    pointer-events: none;
+}
+
+.text-block .pretext-line-row a,
+.text-block .pretext-line-row button {
+    pointer-events: auto;
+}
+
+/* Bio: Pretext posiciona .pretext-line-row; tipografia por classe no filho.
+   Sem letter-spacing aqui: o canvas do Pretext não aplica o mesmo tracking —
+   se definirmos letter-spacing no CSS, o texto renderiza mais largo que a
+   medida usada para colocar os fragmentos e as palavras ficam “coladas”. */
+.pretext-lines {
+    position: relative;
+    margin: 0;
+    width: 100%;
+    font-family: "Archivo Narrow", sans-serif;
+    font-size: var(--fs-fluid-body);
+    font-weight: 400;
+    font-style: italic;
+    line-height: var(--lh-pretext);
+    letter-spacing: normal;
+    word-spacing: normal;
+    color: inherit;
+}
+
+.pretext-line-row {
     position: absolute;
-    background-size: contain;
-    background-repeat: no-repeat;
-    opacity: 0;
-    transition: opacity 1.5s ease;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    line-height: var(--lh-pretext);
+}
+
+/* Corpo: itálico por defeito (.pretext-lines); nome só negrito + romano; links do bio sublinhados */
+.pretext-name {
+    font-family: "Archivo Narrow", sans-serif;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: 700;
+    font-style: normal;
+    cursor: default;
+    color: inherit;
     pointer-events: none;
-    z-index: 10;
 }
 
-/* --- LAYOUT PANES --- */
-.container { position: relative; z-index: 1000; width: 100%; height: 100vh; pointer-events: none; }
-.d-flex { display: flex; width: 100%; height: 100vh; }
-
-/* Panes themselves don't block the mouse */
-.leftpane, .middlepane, .rightpane { pointer-events: none; height: 100vh; box-sizing: border-box; }
-.leftpane { width: 26%; padding: 5%; }
-.middlepane { width: 25%; padding: 5%; }
-.rightpane { width: 49%; padding: 5%; overflow-y: auto; }
-
-/* Interactive elements inside the panes */
-#name, .menu, a, .collapsible, .scatter-item { pointer-events: auto; }
-
-/* The visible content block in the right pane captures mouse for scrolling/clicking */
-.content-div.is-visible { 
-    pointer-events: auto; 
-    display: block; 
+.pretext-meta,
+.pretext-blurb,
+.pretext-plain {
+    font-style: italic;
+    font-weight: 400;
 }
-.content-div { display: none; }
 
-#name { font-size: 2.1vw; margin: 0 0 40px 0; cursor: pointer; font-weight: 700; pointer-events: auto; text-shadow: 2px 2px 6px rgba(244, 241, 234, 0.9), -1px -1px 3px rgba(244, 241, 234, 0.9); }
-.menu { cursor: pointer; margin: 15px 0 15px 20px; font-weight: 700; opacity: 0.25; transition: 0.3s; position: relative; width: fit-content; pointer-events: auto; color: black; text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9), -1px -1px 4px rgba(255, 255, 255, 0.9), 0 0 10px rgba(255, 255, 255, 0.8); }
-.menu.active { opacity: 1; color: black; text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.9), -1px -1px 4px rgba(255, 255, 255, 0.9), 0 0 10px rgba(255, 255, 255, 0.8); }
-.menu.active::before { content: '*'; position: absolute; left: -16px; top: 0; }
-
-/* Constellation restored */
-.constellation-container { position: relative; width: 100%; height: 80vh; }
-.scatter-item { position: absolute; display: flex; align-items: center; justify-content: center; transition: transform 0.5s; cursor: pointer; }
-.scatter-item img { width: 100%; height: auto; display: block; object-fit: contain; }
-.work-label { position: absolute; background: rgba(244, 241, 234, 0.9); padding: 2px 8px; font-weight: 700; opacity: 0; transition: 0.3s; pointer-events: none; }
-.scatter-item:hover .work-label { opacity: 1; }
-.size-s { width: 100px; } .size-m { width: 170px; } .size-l { width: 240px; }
-
-/* Websites section */
-.websites-section { position: absolute; display: inline-block; }
-
-/* Hide work items when work section is not visible */
-.section2.content-div:not(.is-visible) .scatter-item,
-.section2.content-div:not(.is-visible) .websites-section {
-    display: none !important;
+.pretext-tool-link {
+    color: inherit;
+    font-weight: 400;
+    font-style: italic;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
 }
-.sticky-note-wrapper { position: relative; display: inline-block; }
-.sticky-note-img { width: 280px; height: auto; display: block; }
-.sticky-note-title { position: absolute; top: 25px; left: 30px; margin: 0; font-weight: 700; text-align: left; white-space: nowrap; font-size: 0.9em; }
-.website-links { position: absolute; top: 60px; left: 40px; text-align: left; font-size: 0.85em; }
-.website-links p { margin: 8px 0; }
-.website-links a { color: black; text-decoration: underline; }
 
-/* CV Content restored */
-.collapsible { cursor: pointer; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.1); font-weight: 700; text-decoration: underline; }
-.content { display: none; padding: 15px 0; line-height: 1.4; }
-a { color: black; text-decoration: underline; pointer-events: auto; }
+.pretext-work-link {
+    color: inherit;
+    font-weight: 400;
+    font-style: italic;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+.pretext-work-sep {
+    font-weight: 400;
+    font-style: italic;
+}
+
+.pretext-site {
+    font-style: italic;
+    font-weight: 400;
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    opacity: 0.88;
+}
+
+.cv-inline-trigger,
+.contact-inline-trigger {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    font-weight: 400;
+    font-style: italic;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    z-index: 5;
+    pointer-events: auto;
+    transition: color 0.2s ease;
+}
+
+/* Painel aberto: vermelho escuro nos toggles Pretext */
+body.cv-open #cv-inline-toggle,
+#cv-inline-toggle[aria-expanded='true'] {
+    color: #6b0a0a;
+}
+body.contact-open #contact-inline-toggle,
+#contact-inline-toggle[aria-expanded='true'] {
+    color: #6b0a0a;
+}
+
+.cv-inline-trigger:focus-visible,
+.contact-inline-trigger:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.pretext-bundle {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.pretext-fit-outer {
+    width: 100%;
+    overflow: visible;
+}
+
+/* Contact: texto em fluxo normal (append), mesmas classes tipográficas que o bio */
+.contact-inline.pretext-cv {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.55s ease-out;
+    margin: 0;
+    padding: 0;
+    font-family: "Archivo Narrow", sans-serif;
+    font-size: var(--fs-fluid-body);
+    line-height: var(--lh-pretext);
+    letter-spacing: 0.015em;
+    font-weight: 400;
+    font-style: italic;
+    color: inherit;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+}
+.contact-inline.is-open {
+    max-height: 720px;
+    overflow: visible;
+    margin-top: clamp(0.35rem, 1.5vh, 0.9rem);
+    flex: 0 0 auto;
+}
+.contact-pretext-fit-outer {
+    width: 100%;
+    overflow: visible;
+}
+
+/* CV: mesma tipografia que o bloco pretext (corpo + entrelinhas + tracking) */
+.cv-inline.pretext-cv {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.55s ease-out;
+    margin: 0;
+    padding: 0;
+    font-family: "Archivo Narrow", sans-serif;
+    font-size: var(--fs-fluid-body);
+    line-height: var(--lh-pretext);
+    letter-spacing: 0.015em;
+    font-weight: 400;
+    font-style: italic;
+    color: inherit;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+}
+.cv-inline.is-open {
+    max-height: 3200px;
+    overflow: visible;
+    margin-top: clamp(0.35rem, 1.5vh, 0.9rem);
+    flex: 0 0 auto;
+}
+
+.cv-pretext-birth-wrap {
+    width: 100%;
+    overflow: visible;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Blocos Pretext dentro de Contact / CV: sem letter-spacing extra (alinhado ao bio) */
+.pretext-lines.cv-pretext-sub {
+    letter-spacing: normal;
+    word-spacing: normal;
+}
+.contact-inline .pretext-tool-link {
+    text-decoration: none;
+}
+.pretext-cv-body {
+    font-style: italic;
+    font-weight: 400;
+}
+.pretext-cv-strong {
+    font-style: italic;
+    font-weight: 700;
+}
+
+.cv-inline.pretext-cv .content .pretext-fit-outer {
+    margin: 0;
+    padding: 0;
+    min-height: 0;
+}
+
+.cv-inline.pretext-cv .collapsible {
+    display: block;
+    width: 100%;
+    margin: 0.85rem 0 0;
+    padding: 0;
+    box-sizing: border-box;
+    font: inherit;
+    font-style: italic;
+    font-weight: 400;
+    color: inherit;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+.cv-inline.pretext-cv .collapsible[aria-expanded='true'] {
+    font-style: italic;
+    font-weight: 700;
+}
+.cv-inline.pretext-cv .collapsible:hover {
+    color: #2a2a2a;
+}
+
+.cv-inline.pretext-cv .content {
+    display: none;
+    padding: 0.4rem 0 0;
+}
+.cv-inline.pretext-cv .content.is-open {
+    display: block;
+}
+.cv-inline.pretext-cv .content p {
+    margin: 0 0 0.85em 0;
+    font-style: italic;
+    font-weight: 400;
+}
+.cv-inline.pretext-cv .content p:last-child {
+    margin-bottom: 0;
+}
+.cv-inline.pretext-cv .content b {
+    font-style: italic;
+    font-weight: 700;
+}
+.cv-inline.pretext-cv .content i {
+    font-style: italic;
+    font-weight: 400;
+}
+
+.cv-close-hint {
+    margin: 0.65rem 0 0;
+    font-size: var(--fs-fluid-hint);
+    font-style: italic;
+    opacity: 0.55;
+}
+
+a {
+    color: inherit;
+}
 
 @media screen and (max-width: 800px) {
-    body, html { overflow-y: auto; height: auto; }
-    .container { height: auto; }
-    .d-flex { display: block; height: auto; }
-    .leftpane, .middlepane, .rightpane { width: 100%; height: auto; padding: 30px 25px; pointer-events: auto; }
-    #name { font-size: 1.5rem; }
-    /* Keep background drawings visible on mobile, same as desktop */
-    #home-stage { 
-        display: block !important; /* Ensure home-stage is visible */
-        position: fixed !important;
-        z-index: 100 !important; /* Above background but below content when needed */
-    }
-    .drawing-item {
-        opacity: 1 !important; /* Make sure items are visible on mobile */
-        display: block !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-        z-index: 1001 !important; /* Above content container (z-index: 1000) */
-    }
-    .drawing-item.appeared {
-        opacity: 1 !important;
-    }
-    
-    /* Work section - vertical stacking on mobile */
-    .constellation-container { 
-        position: relative; 
-        height: auto; 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        gap: 30px; 
-        padding: 20px 0; 
-    }
-    .scatter-item { 
-        position: relative !important; 
-        left: auto !important; 
-        top: auto !important; 
-        transform: none !important; 
-        margin: 0 auto; 
-        display: block !important;
-    }
-    .work-label {
-        position: absolute !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        opacity: 1 !important;
-        z-index: 10 !important;
-    }
-    .websites-section { 
-        position: relative !important; 
-        left: auto !important; 
-        top: auto !important; 
-        transform: none !important; 
-        margin: 20px auto 0; 
-        display: flex !important;
-        justify-content: center;
-    }
-    .sticky-note-img { 
-        width: 200px !important; 
-    }
-    .sticky-note-title { 
-        font-size: 0.8em !important; 
-        top: 18px !important; 
-        left: 20px !important; 
-    }
-    .website-links { 
-        top: 45px !important; 
-        left: 25px !important; 
-        font-size: 0.75em !important; 
-    }
-    .website-links p { 
-        margin: 10px 0 !important; 
+    :root {
+        --fs-fluid-body: clamp(0.8rem, 0.4rem + 0.95vw + 0.65vh, 1.22rem);
     }
 }

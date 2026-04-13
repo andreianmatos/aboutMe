@@ -1,402 +1,353 @@
 const CONFIG = {
-    pieces: { minToLoad: 3, maxToLoad: 5, minScale: 0.15, maxScale: 0.20 },
-    doodles: { minToShow: 6, maxToShow: 9, minScale: 0.3, maxScale: 0.6, minOpacity: 0.15, maxOpacity: 0.3 },
-    paths: { items: 'main/items/', doodles: 'main/' }
+    pieces: { minScale: 0.1, maxScale: 0.18 },
+    workFloats: { minScale: 0.07, maxScale: 0.12 },
+    paths: { items: 'main/items/' },
+    /** Movimento flutuante: vx/vy por frame (~60fps). */
+    drift: {
+        vMax: 0.82,
+        damping: 0.99935,
+        minSpeed: 0.055,
+        nudge: 0.16,
+    },
 };
 
-// Helper function to convert image URLs to wsrv.nl CDN
+const WORK_FLOATS = [
+    { path: 'main/items/ceramics.png', href: 'https://andreianmatos.github.io/ceramics' },
+    { path: 'main/items/images.png', href: 'https://andreianmatos.github.io/images' },
+    { path: 'main/items/drawings.png', href: 'https://andreianmatos.github.io/drawings' },
+    { path: 'main/items/videos.gif', href: 'https://andreianmatos.github.io/videos' },
+    { path: 'main/items/writings.png', href: 'writings.html' },
+];
+
 function getCDNUrl(relativePath) {
-    // Always use production domain for CDN (images must be accessible from production)
     const productionDomain = 'https://andreiamatos.xyz';
-    // Remove leading slash if present
     const cleanPath = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
     const fullUrl = `${productionDomain}/${cleanPath}`;
-    const cdnUrl = `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}`;
-    console.log(`[CDN] Generated CDN URL for ${relativePath}: ${cdnUrl}`);
-    console.log(`[CDN] Original URL: ${fullUrl}`);
-    return cdnUrl;
+    return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}`;
 }
 
-// Helper function to load image with CDN fallback
-function loadImageWithCDN(imgElement, relativePath) {
-    // Original URL is already set in src attribute, so it will load immediately
-    // Try to upgrade to CDN in the background
-    const cdnUrl = getCDNUrl(relativePath);
-    const originalUrl = imgElement.src;
-    console.log(`[CDN] Attempting to load: ${relativePath}`);
-    console.log(`[CDN] Original URL: ${originalUrl}`);
-    console.log(`[CDN] CDN URL: ${cdnUrl}`);
-    
-    // Test CDN URL
-    const testImg = new Image();
-    testImg.onload = () => {
-        // CDN works, upgrade to CDN
-        console.log(`[CDN] ✓ Successfully loaded via CDN: ${relativePath}`);
-        imgElement.src = cdnUrl;
-    };
-    testImg.onerror = (e) => {
-        // CDN failed, keep original src (already loaded)
-        console.warn(`[CDN] ✗ Failed to load via CDN, using original: ${relativePath}`);
-        console.warn(`[CDN] Error details:`, e);
-        console.warn(`[CDN] Falling back to: ${originalUrl}`);
-    };
-    testImg.src = cdnUrl;
+function resolveAssetUrl(relativePath) {
+    return isProduction() ? getCDNUrl(relativePath) : relativePath;
 }
 
 let floatingItems = [];
-let isPaused = false;
+
+/** Evitar notifyPretextDirty a 60fps: destrói o DOM do Pretext e o clique no CV nunca dispara. */
+let lastPhysicsPretextNotify = 0;
+const PHYSICS_PRETEXT_INTERVAL_MS = 280;
 
 function isMobile() {
     return window.innerWidth <= 800;
 }
 
-// INITIALIZE BACKGROUND DOODLES (main/1.png - main/13.png)
-async function initDoodles() {
-    const isProduction = window.location.hostname === 'andreiamatos.xyz' || window.location.hostname.includes('github.io');
-    const layer = document.getElementById('doodles-layer');
-    const existing = [];
-    for (let i = 1; i <= 13; i++) {
+function isProduction() {
+    return window.location.hostname === 'andreiamatos.xyz' || window.location.hostname.includes('github.io');
+}
+
+function notifyPretextDirty() {
+    window.dispatchEvent(new Event('pretext-dirty'));
+}
+
+function setCvPanelOpen(open) {
+    const panel = document.getElementById('cv-inline');
+    if (!panel) return;
+    panel.classList.toggle('is-open', open);
+    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.classList.toggle('cv-open', open);
+    const btn = document.getElementById('cv-inline-toggle');
+    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    requestAnimationFrame(() => notifyPretextDirty());
+}
+
+function setContactPanelOpen(open) {
+    const panel = document.getElementById('contact-inline');
+    if (!panel) return;
+    panel.classList.toggle('is-open', open);
+    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.classList.toggle('contact-open', open);
+    const btn = document.getElementById('contact-inline-toggle');
+    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    requestAnimationFrame(() => notifyPretextDirty());
+}
+
+/** Botão CV (Pretext) chama isto; definido cedo para o módulo poder usar. */
+function toggleCvPanelFromUi() {
+    const panel = document.getElementById('cv-inline');
+    if (!panel) return;
+    setCvPanelOpen(!panel.classList.contains('is-open'));
+}
+window.toggleCvPanelFromUi = toggleCvPanelFromUi;
+
+function toggleContactPanelFromUi() {
+    const panel = document.getElementById('contact-inline');
+    if (!panel) return;
+    setContactPanelOpen(!panel.classList.contains('is-open'));
+}
+window.toggleContactPanelFromUi = toggleContactPanelFromUi;
+
+function loadImageUrl(url) {
+    return new Promise((res) => {
         const img = new Image();
-        const originalUrl = `${CONFIG.paths.doodles}${i}.png`;
-        const url = isProduction ? getCDNUrl(originalUrl) : originalUrl;
-        if (isProduction) console.log(`[CDN] Loading doodle ${i} via CDN: ${url}`);
-        const found = await new Promise(res => {
-            img.onload = () => {
-                if (isProduction) console.log(`[CDN] ✓ Doodle ${i} loaded successfully via CDN`);
-                res(true);
-            };
-            img.onerror = () => {
-                if (isProduction) console.warn(`[CDN] ✗ Doodle ${i} failed to load via CDN`);
-                res(false);
-            };
-            img.src = url;
-        });
-        if (found) existing.push(i);
-    }
-    const selected = existing.sort(() => Math.random() - 0.5).slice(0, 4);
-    selected.forEach(id => {
-        const d = document.createElement('div');
-        d.className = 'doodle';
-        const originalUrl = `${CONFIG.paths.doodles}${id}.png`;
-        const imageUrl = isProduction ? getCDNUrl(originalUrl) : originalUrl;
-        d.style.backgroundImage = `url(${imageUrl})`;
-        const img = new Image(); img.src = imageUrl;
-        img.onload = () => {
-            // Calculate minimum scale to fill screen (at least screen width or height)
-            const screenMin = Math.min(window.innerWidth, window.innerHeight);
-            const minScaleForScreen = Math.max(
-                screenMin / img.naturalWidth,
-                screenMin / img.naturalHeight
-            );
-            
-            // Calculate maximum scale proportional to image size (smaller overall)
-            // Larger images can scale more, smaller images scale less
-            const screenMax = Math.max(window.innerWidth, window.innerHeight);
-            const imageArea = img.naturalWidth * img.naturalHeight;
-            const screenArea = window.innerWidth * window.innerHeight;
-            
-            // Base scale factor: larger images relative to screen can scale more
-            const sizeRatio = imageArea / screenArea;
-            // Scale factor: images that are already large relative to screen can scale up more (reduced multiplier)
-            const proportionalMaxScale = Math.min(
-                (screenMax * (1.2 + sizeRatio * 0.3)) / img.naturalWidth,
-                (screenMax * (1.2 + sizeRatio * 0.3)) / img.naturalHeight
-            );
-            
-            // Use random scale proportional to image size, but ensure it's within bounds
-            // Larger images get higher max scale from config
-            const baseMaxScale = CONFIG.doodles.maxScale;
-            const imageBasedMaxScale = Math.min(baseMaxScale * (1 + sizeRatio * 0.2), proportionalMaxScale);
-            const randomScale = CONFIG.doodles.minScale + Math.random() * (imageBasedMaxScale - CONFIG.doodles.minScale);
-            let scale = Math.max(randomScale, minScaleForScreen);
-            scale = Math.min(scale, proportionalMaxScale); // Cap maximum size
-            
-            let w = img.naturalWidth * scale;
-            let h = img.naturalHeight * scale;
-            
-            d.style.width = w + "px"; 
-            d.style.height = h + "px";
-            // Position randomly anywhere on screen
-            d.style.left = Math.random() * (window.innerWidth - w) + "px";
-            d.style.top = Math.random() * (window.innerHeight - w) + "px";
-            d.style.transform = `rotate(${Math.random() * 360}deg)`;
-            layer.appendChild(d);
-            setTimeout(() => d.style.opacity = CONFIG.doodles.minOpacity + Math.random() * (CONFIG.doodles.maxOpacity - CONFIG.doodles.minOpacity), 100);
-        };
+        img.onload = () => res(img);
+        img.onerror = () => res(null);
+        img.src = url;
     });
 }
 
-// INITIALIZE DRAGGABLE PIECES (main/items/1.png - main/items/10.png)
-async function initFloating() {
-    const isProduction = window.location.hostname === 'andreiamatos.xyz' || window.location.hostname.includes('github.io');
-    const layer = document.getElementById('drawings-layer');
-    const existing = [];
-    for (let i = 1; i <= 10; i++) {
-        const img = new Image();
-        const originalUrl = `${CONFIG.paths.items}${i}.png`;
-        const url = isProduction ? getCDNUrl(originalUrl) : originalUrl;
-        if (isProduction) console.log(`[CDN] Loading draggable item ${i} via CDN: ${url}`);
-        const found = await new Promise(res => {
-            img.onload = () => {
-                if (isProduction) console.log(`[CDN] ✓ Draggable item ${i} loaded successfully via CDN`);
-                res(true);
-            };
-            img.onerror = () => {
-                if (isProduction) console.warn(`[CDN] ✗ Draggable item ${i} failed to load via CDN`);
-                res(false);
-            };
-            img.src = url;
-        });
-        if (found) existing.push(i);
-    }
-    const selected = existing.sort(() => Math.random() - 0.5).slice(0, 7);
-    selected.forEach((id, index) => {
-        const originalUrl = `${CONFIG.paths.items}${id}.png`;
-        const img = new Image(); img.src = isProduction ? getCDNUrl(originalUrl) : originalUrl;
-        img.onload = () => {
-            const el = createPieceElement(img, layer);
-            // On mobile, show immediately; on desktop, stagger appearance
-            if (isMobile()) {
-                el.classList.add('appeared');
-                // Force visibility on mobile - preserve position transform
-                el.style.opacity = '1';
-                // Don't override transform here - it's already set with position in createPieceElement
-                el.style.display = 'block';
-                el.style.visibility = 'visible';
-                console.log(`[Mobile] Draggable item ${id} created and made visible at transform: ${el.style.transform}`);
-            } else {
-                setTimeout(() => el.classList.add('appeared'), index * 150);
-            }
-        };
-    });
+async function tryLoadItem(id) {
+    const url = resolveAssetUrl(`${CONFIG.paths.items}${id}.png`);
+    const img = await loadImageUrl(url);
+    return img ? id : null;
 }
 
-function createPieceElement(imgObj, parent) {
-    const container = document.createElement('div');
-    container.className = 'drawing-item';
-    const canvas = document.createElement('canvas');
-    canvas.width = imgObj.naturalWidth; canvas.height = imgObj.naturalHeight;
-    canvas.getContext('2d').drawImage(imgObj, 0, 0);
-    container.appendChild(canvas);
-
-    let scale = CONFIG.pieces.minScale + Math.random() * (CONFIG.pieces.maxScale - CONFIG.pieces.minScale);
-    let w = window.innerWidth * scale;
-    container.style.width = w + "px";
-
-    // Position randomly anywhere on screen, ensure it fits on mobile
-    const maxX = Math.max(10, window.innerWidth - w - 10);
-    const maxY = Math.max(10, window.innerHeight - w - 10);
-    const item = { 
-        el: container, 
-        x: Math.random() * maxX + 10, 
-        y: Math.random() * maxY + 10, 
-        vx: (Math.random() - 0.5) * 0.4, 
-        vy: (Math.random() - 0.5) * 0.4, 
-        isDragging: false 
+function attachPointerHandlers(container, item) {
+    const onMove = (e) => {
+        if (item.isDragging) {
+            item.x = e.clientX - item.dragOffsetX;
+            item.y = e.clientY - item.dragOffsetY;
+            item.dragMoved = Math.max(
+                item.dragMoved,
+                Math.hypot(e.clientX - item.dragStartX, e.clientY - item.dragStartY)
+            );
+            notifyPretextDirty();
+        }
     };
-    
-    // Ensure initial position is set immediately with proper transform
-    container.style.position = 'absolute';
-    container.style.left = '0';
-    container.style.top = '0';
-    // Set initial transform - scale will be handled by CSS transition
-    container.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
-    
-    if (isMobile()) {
-        console.log(`[Mobile] Item positioned at x: ${item.x}, y: ${item.y}, width: ${w}, transform: ${container.style.transform}`);
-    }
 
     container.onpointerdown = (e) => {
-        if (isPaused) return; // Don't allow dragging when paused
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
         item.isDragging = true;
+        item.dragMoved = 0;
+        item.dragStartX = e.clientX;
+        item.dragStartY = e.clientY;
+        item.dragDownAt = Date.now();
         container.setPointerCapture(e.pointerId);
         item.dragOffsetX = e.clientX - item.x;
         item.dragOffsetY = e.clientY - item.y;
     };
-    container.onpointermove = (e) => {
-        if (item.isDragging && !isPaused) {
-            item.x = e.clientX - item.dragOffsetX;
-            item.y = e.clientY - item.dragOffsetY;
+    container.onpointermove = onMove;
+    container.onpointerup = () => {
+        item.isDragging = false;
+        const tap = item.linkHref && item.dragMoved < 12 && Date.now() - item.dragDownAt < 900;
+        if (tap) {
+            const h = item.linkHref;
+            if (/^https?:\/\//i.test(h)) {
+                window.open(h, '_blank', 'noopener,noreferrer');
+            } else {
+                window.location.href = h;
+            }
         }
     };
-    container.onpointerup = () => item.isDragging = false;
+    container.onpointercancel = () => {
+        item.isDragging = false;
+    };
+}
+
+function createPieceElement(imgObj, parent, opts = {}) {
+    const { minScale, maxScale, extraClass = '', linkHref = null } = opts;
+    const mn = minScale ?? CONFIG.pieces.minScale;
+    const mx = maxScale ?? CONFIG.pieces.maxScale;
+
+    const container = document.createElement('div');
+    container.className = `drawing-item${extraClass ? ` ${extraClass}` : ''}`;
+    const imgEl = document.createElement('img');
+    imgEl.src = imgObj.src;
+    imgEl.alt = '';
+    imgEl.draggable = false;
+    container.appendChild(imgEl);
+
+    const scale = mn + Math.random() * (mx - mn);
+    const w = window.innerWidth * scale;
+    const ratio = imgObj.naturalHeight / imgObj.naturalWidth;
+    const h = w * ratio;
+    container.style.width = `${w}px`;
+
+    const maxX = Math.max(10, window.innerWidth - w - 10);
+    const maxY = Math.max(10, window.innerHeight - h - 10);
+    const item = {
+        el: container,
+        x: Math.random() * maxX + 10,
+        y: Math.random() * maxY + 10,
+        vx: (Math.random() - 0.5) * 2 * CONFIG.drift.vMax,
+        vy: (Math.random() - 0.5) * 2 * CONFIG.drift.vMax,
+        isDragging: false,
+        w,
+        h,
+        linkHref,
+        dragMoved: 0,
+        dragStartX: 0,
+        dragStartY: 0,
+        dragDownAt: 0,
+    };
+
+    container.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
+    if (linkHref) {
+        container.title = 'Arrastar — ou clicar (sem mover) para abrir';
+    }
+    attachPointerHandlers(container, item);
 
     parent.appendChild(container);
     floatingItems.push(item);
     return container;
 }
 
+async function initFloating() {
+    const layer = document.getElementById('drawings-layer');
+    if (!layer) return;
+
+    const ids = Array.from({ length: 10 }, (_, i) => i + 1);
+    const existing = (await Promise.all(ids.map((id) => tryLoadItem(id)))).filter(Boolean);
+    existing.sort(() => Math.random() - 0.5);
+
+    existing.forEach((id, index) => {
+        const url = resolveAssetUrl(`${CONFIG.paths.items}${id}.png`);
+        const img = new Image();
+        img.onload = () => {
+            createPieceElement(img, layer, {});
+            const el = floatingItems[floatingItems.length - 1]?.el;
+            if (!el) return;
+            if (isMobile()) {
+                el.classList.add('appeared');
+            } else {
+                setTimeout(() => el.classList.add('appeared'), index * 80);
+            }
+        };
+        img.src = url;
+    });
+}
+
+function initWorkFloats() {
+    const layer = document.getElementById('drawings-layer');
+    if (!layer) return;
+
+    WORK_FLOATS.forEach((def, index) => {
+        const url = resolveAssetUrl(def.path);
+        const img = new Image();
+        img.onload = () => {
+            createPieceElement(img, layer, {
+                minScale: CONFIG.workFloats.minScale,
+                maxScale: CONFIG.workFloats.maxScale,
+                extraClass: 'work-float',
+                linkHref: def.href,
+            });
+            const el = floatingItems[floatingItems.length - 1]?.el;
+            if (!el) return;
+            if (isMobile()) {
+                el.classList.add('appeared');
+            } else {
+                setTimeout(() => el.classList.add('appeared'), 120 + index * 70);
+            }
+        };
+        img.src = url;
+    });
+}
+
 function updatePhysics() {
-    const bufferZone = 50; // Soft buffer zone for smoother transitions
-    
-    // Ensure all items are positioned and visible
-    floatingItems.forEach(item => {
-        if (!item.isDragging && !isPaused) {
-            // Apply velocity
+    const bufferZone = 40;
+
+    floatingItems.forEach((item) => {
+        if (!item.isDragging) {
             item.x += item.vx;
             item.y += item.vy;
-            
-            const itemW = item.el.offsetWidth;
-            const itemH = item.el.offsetHeight;
+
+            const itemW = item.w;
+            const itemH = item.h;
             const maxX = window.innerWidth - itemW;
             const maxY = window.innerHeight - itemH;
-            
-            // Soft boundary handling with buffer zones
-            // Left edge
+
             if (item.x < bufferZone) {
                 const factor = item.x / bufferZone;
-                item.vx = Math.abs(item.vx) * (0.3 + factor * 0.7); // Gradually redirect
+                item.vx = Math.abs(item.vx) * (0.3 + factor * 0.7);
                 item.x = Math.max(0, item.x);
             }
-            // Right edge
             if (item.x > maxX - bufferZone) {
                 const factor = (maxX - item.x) / bufferZone;
                 item.vx = -Math.abs(item.vx) * (0.3 + factor * 0.7);
                 item.x = Math.min(maxX, item.x);
             }
-            // Top edge
             if (item.y < bufferZone) {
                 const factor = item.y / bufferZone;
                 item.vy = Math.abs(item.vy) * (0.3 + factor * 0.7);
                 item.y = Math.max(0, item.y);
             }
-            // Bottom edge
             if (item.y > maxY - bufferZone) {
                 const factor = (maxY - item.y) / bufferZone;
                 item.vy = -Math.abs(item.vy) * (0.3 + factor * 0.7);
                 item.y = Math.min(maxY, item.y);
             }
-            
-            // Ensure items stay within bounds
+
             item.x = Math.max(0, Math.min(maxX, item.x));
             item.y = Math.max(0, Math.min(maxY, item.y));
-            
-            // Damping to prevent infinite acceleration
-            item.vx *= 0.999;
-            item.vy *= 0.999;
-            
-            // Keep items moving - add small random boost if velocity gets too low
-            const minVelocity = 0.05;
-            if (Math.abs(item.vx) < minVelocity && Math.abs(item.vy) < minVelocity) {
-                item.vx += (Math.random() - 0.5) * 0.1;
-                item.vy += (Math.random() - 0.5) * 0.1;
+
+            const damp = CONFIG.drift.damping;
+            item.vx *= damp;
+            item.vy *= damp;
+
+            const minV = CONFIG.drift.minSpeed;
+            if (Math.abs(item.vx) < minV && Math.abs(item.vy) < minV) {
+                const n = CONFIG.drift.nudge;
+                item.vx += (Math.random() - 0.5) * 2 * n;
+                item.vy += (Math.random() - 0.5) * 2 * n;
             }
         }
-        // Always update position - use translate3d for smooth animation
-        if (item.el && item.el.style) {
+
+        if (item.el?.style) {
             item.el.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
         }
     });
+
+    const now = performance.now();
+    if (now - lastPhysicsPretextNotify >= PHYSICS_PRETEXT_INTERVAL_MS) {
+        lastPhysicsPretextNotify = now;
+        notifyPretextDirty();
+    }
     requestAnimationFrame(updatePhysics);
-}
-
-function show(sectionId) {
-    const stage = document.getElementById('home-stage');
-    document.querySelectorAll('.content-div').forEach(div => div.classList.remove('is-visible'));
-    document.querySelectorAll('.menu').forEach(item => item.classList.remove('active'));
-
-    if (sectionId === 'home') {
-        stage.classList.remove('dimmed');
-        isPaused = false;
-    } else {
-        stage.classList.add('dimmed');
-        isPaused = true;
-        // Stop any active dragging when opening a section
-        floatingItems.forEach(item => {
-            item.isDragging = false;
-        });
-        if (sectionId === 'section1') {
-            document.querySelectorAll('.section1').forEach(div => div.classList.add('is-visible'));
-            document.getElementById('nav-about').classList.add('active');
-        } else if (sectionId === 'section2') {
-            document.querySelectorAll('.section2').forEach(div => div.classList.add('is-visible'));
-            document.getElementById('nav-work').classList.add('active');
-            if (window.innerWidth > 800) setTimeout(scatterItems, 50);
-        }
-    }
-}
-
-function scatterItems() {
-    const items = Array.from(document.querySelectorAll('.constellation-container .scatter-item'));
-    const websitesSection = document.querySelector('.constellation-container .websites-section');
-    const container = document.querySelector('.constellation-container');
-    if (!container || items.length === 0) return;
-    const width = container.offsetWidth, height = container.offsetHeight;
-    const cols = 2, rows = 3;
-    const cellW = width / cols, cellH = height / rows;
-    let slots = [];
-    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) slots.push({ r, c });
-    slots.sort(() => Math.random() - 0.5);
-    
-    // Position scatter items
-    items.forEach((item, index) => {
-        if (index >= slots.length) return;
-        const slot = slots[index];
-        const baseX = slot.c * cellW + (cellW / 2), baseY = slot.r * cellH + (cellH / 2);
-        const itemW = item.offsetWidth, itemH = item.offsetHeight;
-        item.style.left = `${Math.max(10, Math.min(baseX + (Math.random()-0.5)*cellW*0.4 - (itemW/2), width-itemW-10))}px`;
-        item.style.top = `${Math.max(10, Math.min(baseY + (Math.random()-0.5)*cellH*0.4 - (itemH/2), height-itemH-10))}px`;
-        item.style.transform = `rotate(${(Math.random() - 0.5) * 12}deg)`;
-    });
-    
-    // Position sticky note in an available slot (wait for image to load for accurate dimensions)
-    if (websitesSection) {
-        const stickyImg = websitesSection.querySelector('.sticky-note-img');
-        if (stickyImg && stickyImg.complete) {
-            positionStickyNote();
-        } else if (stickyImg) {
-            stickyImg.onload = positionStickyNote;
-        } else {
-            setTimeout(positionStickyNote, 100);
-        }
-    }
-    
-    function positionStickyNote() {
-        if (!websitesSection) return;
-        const usedSlots = items.slice(0, Math.min(items.length, slots.length)).map((item, index) => slots[index]);
-        const availableSlots = slots.filter(slot => !usedSlots.some(used => used.r === slot.r && used.c === slot.c));
-        
-        if (availableSlots.length > 0) {
-            const slot = availableSlots[Math.floor(Math.random() * availableSlots.length)];
-            const baseX = slot.c * cellW + (cellW / 2), baseY = slot.r * cellH + (cellH / 2);
-            const itemW = websitesSection.offsetWidth || 280, itemH = websitesSection.offsetHeight || 200;
-            websitesSection.style.left = `${Math.max(10, Math.min(baseX + (Math.random()-0.5)*cellW*0.4 - (itemW/2), width-itemW-10))}px`;
-            websitesSection.style.top = `${Math.max(10, Math.min(baseY + (Math.random()-0.5)*cellH*0.4 - (itemH/2), height-itemH-10))}px`;
-            websitesSection.style.transform = `rotate(${(Math.random() - 0.5) * 8}deg)`;
-        }
-    }
 }
 
 function toggleCollapsible(element) {
     const content = element.nextElementSibling;
-    content.style.display = (content.style.display === "block") ? "none" : "block";
+    if (!content?.classList.contains('content')) return;
+    const willOpen = !content.classList.contains('is-open');
+    content.classList.toggle('is-open', willOpen);
+    element.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    requestAnimationFrame(() => notifyPretextDirty());
 }
 
-function scrollToTop() {
-    if (window.innerWidth <= 800) window.scrollTo({ top: 0, behavior: 'smooth' });
-    else { const rp = document.getElementById('rightpane'); if (rp) rp.scrollTop = 0; }
+function initCvInline() {
+    const panel = document.getElementById('cv-inline');
+    const textBlock = document.querySelector('.text-block');
+    if (!panel || !textBlock || textBlock.dataset.cvDeleg) return;
+    textBlock.dataset.cvDeleg = '1';
+
+    panel.querySelectorAll('.content').forEach((el) => el.style.removeProperty('display'));
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (panel.classList.contains('is-open')) setCvPanelOpen(false);
+        const contactPanel = document.getElementById('contact-inline');
+        if (contactPanel?.classList.contains('is-open')) setContactPanelOpen(false);
+    });
+
+    panel.addEventListener('transitionend', (e) => {
+        if (e.propertyName === 'max-height') {
+            notifyPretextDirty();
+        }
+    });
+
+    const contactPanel = document.getElementById('contact-inline');
+    if (contactPanel) {
+        contactPanel.addEventListener('transitionend', (e) => {
+            if (e.propertyName === 'max-height') {
+                notifyPretextDirty();
+            }
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Only use CDN on production domain, otherwise use original images
-    const isProduction = window.location.hostname === 'andreiamatos.xyz' || window.location.hostname.includes('github.io');
-    console.log(`[CDN] Current hostname: ${window.location.hostname}`);
-    console.log(`[CDN] Production mode: ${isProduction}`);
-    
-    if (isProduction) {
-        console.log('[CDN] Enabling CDN for images...');
-        // Load CDN images for img tags with data-src attribute
-        document.querySelectorAll('img.cdn-image').forEach(img => {
-            if (img.dataset.src) {
-                loadImageWithCDN(img, img.dataset.src);
-            }
-        });
-    } else {
-        console.log('[CDN] Not in production mode, using original images');
-    }
-    // If not production, images will use their original src (already set in HTML)
-    
-    initDoodles(); 
-    // initFloating(); // Disabled - user doesn't want floating items
-    // updatePhysics(); // Only needed for floating items
+    initCvInline();
+    setContactPanelOpen(true);
+    setCvPanelOpen(true);
+    initFloating();
+    initWorkFloats();
+    updatePhysics();
 });

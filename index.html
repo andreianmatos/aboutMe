@@ -1,137 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Andreia Matos</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
+    <script type="module" src="pretext-flow.js"></script>
 </head>
-<body>
+<body class="page-home contact-open cv-open">
 
-    <!-- HOME PAGE ANIMATION STAGE -->
-    <div id="home-stage">
-        <div id="doodles-layer"></div>
-        <div id="drawings-layer"></div>
-    </div>
-
-    <div class="container">
-        <div class="d-flex">
-
-            <!-- LEFT PANE -->
-            <div class="leftpane">
-                <h2 id="name" onclick="show('home'); scrollToTop();">Andreia Matos</h2>
-                <div class="nav-links">
-                    <p id="nav-about" class="menu" onclick="show('section1'); scrollToTop();">About</p>
-                    <p id="nav-work" class="menu" onclick="show('section2'); scrollToTop();">Work</p>
+    <div class="site-chrome">
+        <main class="text-block">
+            <div class="pretext-bundle">
+                <div class="pretext-fit-outer">
+                    <div id="pretext-lines" class="pretext-lines"></div>
                 </div>
-            </div>
-
-            <!-- MIDDLE PANE -->
-            <div class="middlepane">
-                <div class="section1 content-div">
-                    <p>andreiangmatos@gmail.com</p>
-                    <p><a href="https://www.instagram.com/andreiangmatos/" target="_blank">instagram</a></p> 
-                </div>
-                <div class="section2 content-div">
-                    <p>Things I can make: images, videos, ceramics, websites, scripts, texts, books, </p>
-                    <p>Click and explore...</p>
-                    <p>[working on some of the links]</p>
-                </div>
-            </div>
-
-            <!-- RIGHT PANE -->
-            <div class="rightpane" id="rightpane">
-                
-                <!-- ABOUT SECTION -->
-                <div class="section1 content-div">
-                    <p>b. 1999, Viseu, Portugal | Based in Lisboa, Portugal</p>
-                    <p>,,,</p>
-                    <p>Maker of things, thinker-feeler, fluttering. <br>
-                    </p>
-                    <p>,,,</p>
-                    
-                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Education</u></div>
-                    <div class="content">
-                        <p>(2024-2025) <b>Post-Graduation in Communication Sciences: Contemporary Culture and New Technologies</b><br>
-                        Faculdade de Ciências Sociais e Humanas (FCSH), Universidade Nova de Lisboa (NOVA)</p>
-                        <p>(2020-2022) <b>MSc in Computer Science and Engineering</b><br>
-                        Instituto Superior Técnico (IST), Universidade de Lisboa (UL)<br>
-                        <i>Specializations: Artificial Intelligence | Computer Graphics</i></p>
-                        <p>+ <b>Erasmus Exchange Programme</b><br>
-                        ENSIMAG, Université Grenoble Alpes (UGA), Grenoble, France</p>
-                        <p>(2017-2020) <b>BSc in Computer Science and Engineering</b><br>
-                        Instituto Superior Técnico (IST), Universidade de Lisboa (UL)</p>
-                    </div>
-
-                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Residencies + Workshops</u></div>
-                    <div class="content"> 
-                        <p>(2025) <b>Alternative Dreams</b><br>
-                        Alternative photographic printing processes<br>
-                        Imagerie - Casa de Imagens Lisboa, Portugal</p>
-                        <p>(2025) <b>Provisional School for Nothing</b><br>
-                        Associação Provisória, Sabóia, Portugal</p>
-                        <p>(2024) <b>Classical Bookbinding Workshop</b><br>
-                        Artlier, Lisboa, Portugal</p>
-                        <p>(2023) <b>Ceramics Club</b><br>
-                        Corrente, Lisboa, Portugal</p>
-                    </div>
-
-                    <div class="collapsible" onclick="toggleCollapsible(this)"><u>Work Experience</u></div>
-                    <div class="content">
-                        <p>(01.2023-Present) <b>Data Scientist / ML Engineer</b> — <b>Nokia</b>, Lisboa, Portugal</p>
-                        <p>(12.2023-03.2024) <b>Research Assistant</b> — <b>Tallinn University (TLU)</b>, Estonia</p>
-                        <p>(03.2022-07.2022) <b>Invited Teaching Assistant</b> — <b>IST</b>, Lisboa</p>
-                        <p>(09.2021-10.2022) <b>Research Intern</b> — <b>INESC-ID</b>, Lisboa</p>
-                        +
-                        <p>(2024, 2025) <b>Programming Team</b> — Olhares do Mediterrâneo</p>
-                        <p>(2022, 2023) <b>Production Support</b> — Doclisboa</p>
-                        <p>(2022) <b>Production Support</b> — Queer Lisboa</p>
-                        <p>(2020-2022) <b>Co-Founder</b> — Kino Kave Cineclub</p>
+                <div id="contact-inline" class="contact-inline pretext-cv is-open" aria-hidden="false">
+                    <div class="pretext-fit-outer contact-pretext-fit-outer">
+                        <div id="contact-pretext-lines" class="pretext-lines cv-pretext-sub"></div>
                     </div>
                 </div>
-
-                <!-- WORK SECTION -->
-                <div class="section2 content-div constellation-container">
-                    <a href="https://andreianmatos.github.io/ceramics" target="_blank" class="scatter-item size-l">
-                        <img src="work/ceramics.png" data-src="work/ceramics.png" alt="Ceramics" class="cdn-image">
-                        <span class="work-label">Ceramics</span>
-                    </a> 
-                    <div  href="https://andreianmatos.github.io/images" target="_blank" class="scatter-item size-s">
-                         <img src="work/images.png" data-src="work/images.png" alt="Images" class="cdn-image">
-                         <span class="work-label">Images</span>
+                <div id="cv-inline" class="cv-inline pretext-cv is-open" aria-hidden="false">
+                    <div class="pretext-fit-outer cv-pretext-birth-wrap">
+                        <div id="cv-pretext-birth" class="pretext-lines cv-pretext-sub"></div>
                     </div>
-                     <a href="https://andreianmatos.github.io/drawings" target="_blank" class="scatter-item size-l">
-                        <img src="work/drawings.png" data-src="work/drawings.png" alt="Drawings" class="cdn-image">
-                        <span class="work-label">Drawings</span>
-                     </a>
-                    <a href="https://andreianmatos.github.io/videos" target="_blank" class="scatter-item size-m">
-                        <img src="work/videos.gif" data-src="work/videos.gif" alt="Videos" class="cdn-image">
-                        <span class="work-label">Videos</span>
-                    </a>
-                    <a href="writings.html" class="scatter-item size-m">
-                        <img src="work/writings.png" data-src="work/writings.png" alt="Writings" target="_blank" class="cdn-image">
-                        <span class="work-label">Writings</span>
-                    </a> 
-                     
-                    <div class="websites-section">
-                        <div class="sticky-note-wrapper">
-                            <img src="work/stickynote.png" data-src="work/stickynote.png" alt="Sticky Note" class="sticky-note-img cdn-image">
-                            <p class="sticky-note-title">websites:</p>
-                            <div class="website-links">
-                                <p>- this one :)</p>
-                            </div>
+                    <button type="button" class="collapsible" aria-expanded="true" onclick="toggleCollapsible(this)">Education</button>
+                    <div class="content is-open">
+                        <div class="pretext-fit-outer">
+                            <div id="cv-pretext-education" class="pretext-lines cv-pretext-sub"></div>
+                        </div>
+                    </div>
+                    <button type="button" class="collapsible" aria-expanded="true" onclick="toggleCollapsible(this)">Workshops</button>
+                    <div class="content is-open">
+                        <div class="pretext-fit-outer">
+                            <div id="cv-pretext-workshops" class="pretext-lines cv-pretext-sub"></div>
+                        </div>
+                    </div>
+                    <button type="button" class="collapsible" aria-expanded="true" onclick="toggleCollapsible(this)">Residencies</button>
+                    <div class="content is-open">
+                        <div class="pretext-fit-outer">
+                            <div id="cv-pretext-residencies" class="pretext-lines cv-pretext-sub"></div>
+                        </div>
+                    </div>
+                    <button type="button" class="collapsible" aria-expanded="true" onclick="toggleCollapsible(this)">Work experience</button>
+                    <div class="content is-open">
+                        <div class="pretext-fit-outer">
+                            <div id="cv-pretext-work" class="pretext-lines cv-pretext-sub"></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
+
+    <div id="drawings-layer" aria-hidden="true"></div>
 
 </body>
 </html>
