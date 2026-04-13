@@ -1,6 +1,9 @@
 const CONFIG = {
     pieces: { minScale: 0.1, maxScale: 0.18 },
+    /** Largura ≈ min(vw,vh) * escala — no telemóvel o ecrã estreito pede escalas maiores. */
+    piecesMobile: { minScale: 0.3, maxScale: 0.46 },
     workFloats: { minScale: 0.07, maxScale: 0.12 },
+    workFloatsMobile: { minScale: 0.2, maxScale: 0.34 },
     paths: { items: 'main/items/' },
     /** Movimento flutuante: vx/vy por frame (~60fps). */
     drift: {
@@ -49,6 +52,23 @@ function viewportHeight() {
     return window.visualViewport?.height ?? window.innerHeight;
 }
 
+function contentScrollWidth() {
+    return document.documentElement.clientWidth || window.innerWidth;
+}
+
+function contentScrollHeight() {
+    return Math.max(
+        document.documentElement.scrollHeight,
+        document.body?.scrollHeight ?? 0,
+        window.innerHeight
+    );
+}
+
+function getLayerLocalPoint(e, layer) {
+    const r = layer.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
 let floatingItems = [];
 
 /** Evitar notifyPretextDirty a 60fps: destrói o DOM do Pretext e o clique no CV nunca dispara. */
@@ -56,7 +76,7 @@ let lastPhysicsPretextNotify = 0;
 const PHYSICS_PRETEXT_INTERVAL_MS = 280;
 
 function isMobile() {
-    return window.innerWidth <= 800;
+    return window.matchMedia('(max-width: 800px)').matches;
 }
 
 function notifyPretextDirty() {
@@ -119,27 +139,32 @@ async function loadAssetImage(relativePath) {
 
 function attachPointerHandlers(container, item) {
     const onMove = (e) => {
-        if (item.isDragging) {
-            item.x = e.clientX - item.dragOffsetX;
-            item.y = e.clientY - item.dragOffsetY;
-            item.dragMoved = Math.max(
-                item.dragMoved,
-                Math.hypot(e.clientX - item.dragStartX, e.clientY - item.dragStartY)
-            );
-            notifyPretextDirty();
-        }
+        if (!item.isDragging) return;
+        const layer = document.getElementById('drawings-layer');
+        if (!layer) return;
+        const { x: lx, y: ly } = getLayerLocalPoint(e, layer);
+        item.x = lx - item.dragOffsetX;
+        item.y = ly - item.dragOffsetY;
+        item.dragMoved = Math.max(
+            item.dragMoved,
+            Math.hypot(e.clientX - item.dragStartX, e.clientY - item.dragStartY)
+        );
+        notifyPretextDirty();
     };
 
     container.onpointerdown = (e) => {
         if (e.button !== 0 && e.pointerType === 'mouse') return;
+        const layer = document.getElementById('drawings-layer');
+        if (!layer) return;
+        const { x: lx, y: ly } = getLayerLocalPoint(e, layer);
         item.isDragging = true;
         item.dragMoved = 0;
         item.dragStartX = e.clientX;
         item.dragStartY = e.clientY;
         item.dragDownAt = Date.now();
         container.setPointerCapture(e.pointerId);
-        item.dragOffsetX = e.clientX - item.x;
-        item.dragOffsetY = e.clientY - item.y;
+        item.dragOffsetX = lx - item.x;
+        item.dragOffsetY = ly - item.y;
     };
     container.onpointermove = onMove;
     container.onpointerup = () => {
@@ -160,9 +185,18 @@ function attachPointerHandlers(container, item) {
 }
 
 function createPieceElement(imgObj, parent, opts = {}) {
-    const { minScale, maxScale, extraClass = '', linkHref = null } = opts;
-    const mn = minScale ?? CONFIG.pieces.minScale;
-    const mx = maxScale ?? CONFIG.pieces.maxScale;
+    const { extraClass = '', linkHref = null } = opts;
+    const m = isMobile();
+    const isWork = /\bwork-float\b/.test(extraClass);
+    let mn;
+    let mx;
+    if (isWork) {
+        mn = m ? CONFIG.workFloatsMobile.minScale : CONFIG.workFloats.minScale;
+        mx = m ? CONFIG.workFloatsMobile.maxScale : CONFIG.workFloats.maxScale;
+    } else {
+        mn = m ? CONFIG.piecesMobile.minScale : CONFIG.pieces.minScale;
+        mx = m ? CONFIG.piecesMobile.maxScale : CONFIG.pieces.maxScale;
+    }
 
     const container = document.createElement('div');
     container.className = `drawing-item${extraClass ? ` ${extraClass}` : ''}`;
@@ -174,15 +208,17 @@ function createPieceElement(imgObj, parent, opts = {}) {
 
     const scale = mn + Math.random() * (mx - mn);
     const vw = viewportWidth();
-    const vh = viewportHeight();
-    const w = vw * scale;
+    const refW = m ? Math.min(vw, viewportHeight()) : vw;
+    const w = refW * scale;
     const ratio =
         imgObj.naturalWidth > 0 ? imgObj.naturalHeight / imgObj.naturalWidth : 1;
     const h = w * ratio;
     container.style.width = `${w}px`;
 
-    const maxX = Math.max(10, vw - w - 10);
-    const maxY = Math.max(10, vh - h - 10);
+    const docW = contentScrollWidth();
+    const docH = contentScrollHeight();
+    const maxX = Math.max(10, docW - w - 10);
+    const maxY = Math.max(10, docH - h - 10);
     const item = {
         el: container,
         x: Math.random() * maxX + 10,
@@ -243,8 +279,6 @@ async function initWorkFloats() {
         const img = await loadAssetImage(def.path);
         if (!img) continue;
         createPieceElement(img, layer, {
-            minScale: CONFIG.workFloats.minScale,
-            maxScale: CONFIG.workFloats.maxScale,
             extraClass: 'work-float',
             linkHref: def.href,
         });
@@ -268,8 +302,8 @@ function updatePhysics() {
 
             const itemW = item.w;
             const itemH = item.h;
-            const maxX = viewportWidth() - itemW;
-            const maxY = viewportHeight() - itemH;
+            const maxX = contentScrollWidth() - itemW;
+            const maxY = contentScrollHeight() - itemH;
 
             if (item.x < bufferZone) {
                 const factor = item.x / bufferZone;
