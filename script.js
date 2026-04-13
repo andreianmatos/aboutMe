@@ -26,8 +26,29 @@ function getCDNUrl(relativePath) {
     return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}`;
 }
 
+/** wsrv só faz sentido no domínio onde as imagens estão nesse URL fixo; em github.io falhavam todas no telemóvel. */
+function shouldProxyImagesViaWsrv() {
+    const h = window.location.hostname;
+    return h === 'andreiamatos.xyz' || h === 'www.andreiamatos.xyz';
+}
+
 function resolveAssetUrl(relativePath) {
-    return isProduction() ? getCDNUrl(relativePath) : relativePath;
+    const clean = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+    if (!isProduction()) return clean;
+    if (shouldProxyImagesViaWsrv()) return getCDNUrl(relativePath);
+    try {
+        return new URL(clean, window.location.href).href;
+    } catch (_) {
+        return clean;
+    }
+}
+
+function viewportWidth() {
+    return window.visualViewport?.width ?? window.innerWidth;
+}
+
+function viewportHeight() {
+    return window.visualViewport?.height ?? window.innerHeight;
 }
 
 let floatingItems = [];
@@ -156,13 +177,16 @@ function createPieceElement(imgObj, parent, opts = {}) {
     container.appendChild(imgEl);
 
     const scale = mn + Math.random() * (mx - mn);
-    const w = window.innerWidth * scale;
-    const ratio = imgObj.naturalHeight / imgObj.naturalWidth;
+    const vw = viewportWidth();
+    const vh = viewportHeight();
+    const w = vw * scale;
+    const ratio =
+        imgObj.naturalWidth > 0 ? imgObj.naturalHeight / imgObj.naturalWidth : 1;
     const h = w * ratio;
     container.style.width = `${w}px`;
 
-    const maxX = Math.max(10, window.innerWidth - w - 10);
-    const maxY = Math.max(10, window.innerHeight - h - 10);
+    const maxX = Math.max(10, vw - w - 10);
+    const maxY = Math.max(10, vh - h - 10);
     const item = {
         el: container,
         x: Math.random() * maxX + 10,
@@ -251,8 +275,8 @@ function updatePhysics() {
 
             const itemW = item.w;
             const itemH = item.h;
-            const maxX = window.innerWidth - itemW;
-            const maxY = window.innerHeight - itemH;
+            const maxX = viewportWidth() - itemW;
+            const maxY = viewportHeight() - itemH;
 
             if (item.x < bufferZone) {
                 const factor = item.x / bufferZone;

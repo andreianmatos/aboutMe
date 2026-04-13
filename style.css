@@ -61,6 +61,12 @@ body.page-home.contact-open {
     z-index: 900;
     pointer-events: none;
 }
+/* Telemóvel: texto ocupa quase todo o ecrã; camada fixa por baixo do .site-chrome (z 1000) ficava tapada. */
+@media screen and (max-width: 800px) {
+    #drawings-layer {
+        z-index: 1100;
+    }
+}
 #drawings-layer .drawing-item {
     pointer-events: auto;
 }
