@@ -1,3 +1,5 @@
+/* Imagens: pasta main/items/ ao lado de index.html (commit no Git).
+   Flutuantes: 1.png … 10.png. Thumbnails: ceramics.png, images.png, drawings.png, videos.gif, writings.png */
 const CONFIG = {
     pieces: { minScale: 0.1, maxScale: 0.18 },
     workFloats: { minScale: 0.07, maxScale: 0.12 },
@@ -19,28 +21,23 @@ const WORK_FLOATS = [
     { path: 'main/items/writings.png', href: 'writings.html' },
 ];
 
-function getCDNUrl(relativePath) {
-    const productionDomain = 'https://andreiamatos.xyz';
-    const cleanPath = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
-    const fullUrl = `${productionDomain}/${cleanPath}`;
-    return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}`;
-}
-
-/** wsrv só faz sentido no domínio onde as imagens estão nesse URL fixo; em github.io falhavam todas no telemóvel. */
-function shouldProxyImagesViaWsrv() {
-    const h = window.location.hostname;
-    return h === 'andreiamatos.xyz' || h === 'www.andreiamatos.xyz';
+/**
+ * Pasta “actual” da página. Sem isto, em URLs como …/aboutMe (sem / final),
+ * new URL('main/items/1.png', location) vira …/main/items/1.png em vez de …/aboutMe/main/items/1.png
+ * (comum em GitHub Pages no telemóvel).
+ */
+function pageDirectoryPath() {
+    let p = window.location.pathname;
+    if (p.endsWith('/')) return p;
+    if (/\.html?$/i.test(p)) return p.replace(/\/[^/]*$/, '/');
+    return `${p}/`;
 }
 
 function resolveAssetUrl(relativePath) {
-    const clean = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
-    if (!isProduction()) return clean;
-    if (shouldProxyImagesViaWsrv()) return getCDNUrl(relativePath);
-    try {
-        return new URL(clean, window.location.href).href;
-    } catch (_) {
-        return clean;
-    }
+    const clean = relativePath.replace(/^\//, '');
+    if (window.location.protocol === 'file:') return clean;
+    const dir = pageDirectoryPath();
+    return `${window.location.origin}${dir}${clean}`;
 }
 
 function viewportWidth() {
@@ -58,11 +55,7 @@ let lastPhysicsPretextNotify = 0;
 const PHYSICS_PRETEXT_INTERVAL_MS = 280;
 
 function isMobile() {
-    return window.innerWidth <= 800;
-}
-
-function isProduction() {
-    return window.location.hostname === 'andreiamatos.xyz' || window.location.hostname.includes('github.io');
+    return window.matchMedia('(max-width: 800px)').matches;
 }
 
 function notifyPretextDirty() {
@@ -109,6 +102,8 @@ window.toggleContactPanelFromUi = toggleContactPanelFromUi;
 function loadImageUrl(url) {
     return new Promise((res) => {
         const img = new Image();
+        img.decoding = 'async';
+        img.loading = 'eager';
         img.onload = () => res(img);
         img.onerror = () => res(null);
         img.src = url;
@@ -225,6 +220,8 @@ async function initFloating() {
     existing.forEach((id, index) => {
         const url = resolveAssetUrl(`${CONFIG.paths.items}${id}.png`);
         const img = new Image();
+        img.decoding = 'async';
+        img.loading = 'eager';
         img.onload = () => {
             createPieceElement(img, layer, {});
             const el = floatingItems[floatingItems.length - 1]?.el;
@@ -235,6 +232,7 @@ async function initFloating() {
                 setTimeout(() => el.classList.add('appeared'), index * 80);
             }
         };
+        img.onerror = () => {};
         img.src = url;
     });
 }
@@ -246,6 +244,8 @@ function initWorkFloats() {
     WORK_FLOATS.forEach((def, index) => {
         const url = resolveAssetUrl(def.path);
         const img = new Image();
+        img.decoding = 'async';
+        img.loading = 'eager';
         img.onload = () => {
             createPieceElement(img, layer, {
                 minScale: CONFIG.workFloats.minScale,
@@ -261,6 +261,7 @@ function initWorkFloats() {
                 setTimeout(() => el.classList.add('appeared'), 120 + index * 70);
             }
         };
+        img.onerror = () => {};
         img.src = url;
     });
 }
