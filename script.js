@@ -19,28 +19,26 @@ const WORK_FLOATS = [
     { path: 'main/items/writings.png', href: 'writings.html' },
 ];
 
-function getCDNUrl(relativePath) {
-    const productionDomain = 'https://andreiamatos.xyz';
-    const cleanPath = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
-    const fullUrl = `${productionDomain}/${cleanPath}`;
-    return `https://wsrv.nl/?url=${encodeURIComponent(fullUrl)}`;
-}
-
-/** wsrv só faz sentido no domínio onde as imagens estão nesse URL fixo; em github.io falhavam todas no telemóvel. */
-function shouldProxyImagesViaWsrv() {
-    const h = window.location.hostname;
-    return h === 'andreiamatos.xyz' || h === 'www.andreiamatos.xyz';
+function pageDirectoryPath() {
+    let p = window.location.pathname;
+    if (p.endsWith('/')) return p;
+    if (/\.html?$/i.test(p)) return p.replace(/\/[^/]*$/, '/');
+    return `${p}/`;
 }
 
 function resolveAssetUrl(relativePath) {
-    const clean = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
-    if (!isProduction()) return clean;
-    if (shouldProxyImagesViaWsrv()) return getCDNUrl(relativePath);
-    try {
-        return new URL(clean, window.location.href).href;
-    } catch (_) {
-        return clean;
-    }
+    const clean = relativePath.replace(/^\//, '');
+    if (window.location.protocol === 'file:') return clean;
+    return `${window.location.origin}${pageDirectoryPath()}${clean}`;
+}
+
+/** Go Live vs site em produção: tentar pasta da página e depois raiz do domínio (CNAME / index na raiz). */
+function candidateAssetUrls(relativePath) {
+    const clean = relativePath.replace(/^\//, '');
+    if (window.location.protocol === 'file:') return [clean];
+    const primary = resolveAssetUrl(relativePath);
+    const atRoot = `${window.location.origin}/${clean}`;
+    return primary === atRoot ? [primary] : [primary, atRoot];
 }
 
 function viewportWidth() {
@@ -59,10 +57,6 @@ const PHYSICS_PRETEXT_INTERVAL_MS = 280;
 
 function isMobile() {
     return window.innerWidth <= 800;
-}
-
-function isProduction() {
-    return window.location.hostname === 'andreiamatos.xyz' || window.location.hostname.includes('github.io');
 }
 
 function notifyPretextDirty() {
@@ -115,10 +109,12 @@ function loadImageUrl(url) {
     });
 }
 
-async function tryLoadItem(id) {
-    const url = resolveAssetUrl(`${CONFIG.paths.items}${id}.png`);
-    const img = await loadImageUrl(url);
-    return img ? id : null;
+async function loadAssetImage(relativePath) {
+    for (const url of candidateAssetUrls(relativePath)) {
+        const img = await loadImageUrl(url);
+        if (img) return img;
+    }
+    return null;
 }
 
 function attachPointerHandlers(container, item) {
@@ -219,50 +215,47 @@ async function initFloating() {
     if (!layer) return;
 
     const ids = Array.from({ length: 10 }, (_, i) => i + 1);
-    const existing = (await Promise.all(ids.map((id) => tryLoadItem(id)))).filter(Boolean);
-    existing.sort(() => Math.random() - 0.5);
+    const loaded = [];
+    for (const id of ids) {
+        const img = await loadAssetImage(`${CONFIG.paths.items}${id}.png`);
+        if (img) loaded.push(img);
+    }
+    loaded.sort(() => Math.random() - 0.5);
 
-    existing.forEach((id, index) => {
-        const url = resolveAssetUrl(`${CONFIG.paths.items}${id}.png`);
-        const img = new Image();
-        img.onload = () => {
-            createPieceElement(img, layer, {});
-            const el = floatingItems[floatingItems.length - 1]?.el;
-            if (!el) return;
-            if (isMobile()) {
-                el.classList.add('appeared');
-            } else {
-                setTimeout(() => el.classList.add('appeared'), index * 80);
-            }
-        };
-        img.src = url;
+    loaded.forEach((img, index) => {
+        createPieceElement(img, layer, {});
+        const el = floatingItems[floatingItems.length - 1]?.el;
+        if (!el) return;
+        if (isMobile()) {
+            el.classList.add('appeared');
+        } else {
+            setTimeout(() => el.classList.add('appeared'), index * 80);
+        }
     });
 }
 
-function initWorkFloats() {
+async function initWorkFloats() {
     const layer = document.getElementById('drawings-layer');
     if (!layer) return;
 
-    WORK_FLOATS.forEach((def, index) => {
-        const url = resolveAssetUrl(def.path);
-        const img = new Image();
-        img.onload = () => {
-            createPieceElement(img, layer, {
-                minScale: CONFIG.workFloats.minScale,
-                maxScale: CONFIG.workFloats.maxScale,
-                extraClass: 'work-float',
-                linkHref: def.href,
-            });
-            const el = floatingItems[floatingItems.length - 1]?.el;
-            if (!el) return;
-            if (isMobile()) {
-                el.classList.add('appeared');
-            } else {
-                setTimeout(() => el.classList.add('appeared'), 120 + index * 70);
-            }
-        };
-        img.src = url;
-    });
+    for (let index = 0; index < WORK_FLOATS.length; index++) {
+        const def = WORK_FLOATS[index];
+        const img = await loadAssetImage(def.path);
+        if (!img) continue;
+        createPieceElement(img, layer, {
+            minScale: CONFIG.workFloats.minScale,
+            maxScale: CONFIG.workFloats.maxScale,
+            extraClass: 'work-float',
+            linkHref: def.href,
+        });
+        const el = floatingItems[floatingItems.length - 1]?.el;
+        if (!el) continue;
+        if (isMobile()) {
+            el.classList.add('appeared');
+        } else {
+            setTimeout(() => el.classList.add('appeared'), 120 + index * 70);
+        }
+    }
 }
 
 function updatePhysics() {
@@ -371,7 +364,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initCvInline();
     setContactPanelOpen(true);
     setCvPanelOpen(true);
-    initFloating();
-    initWorkFloats();
     updatePhysics();
+    void (async () => {
+        await initFloating();
+        await initWorkFloats();
+    })();
 });
