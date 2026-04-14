@@ -664,7 +664,9 @@ function layoutRunsIntoMount(mount, runs, lhStride, options) {
     const canvasW =
       typeof line.width === 'number' && line.width > 0 && Number.isFinite(line.width) ? line.width : 0;
     const domW = measureDomFragmentWidth(mount, run, line.text);
-    const w = Math.max(canvasW, domW, 1);
+    /* Avanço horizontal: confiar no DOM. O canvas do Pretext costuma *exagerar* o negrito vs
+       o texto renderizado → max(canvas, dom) deixava vazio grande entre o nome e o " · ". */
+    const w = domW > 0.5 ? domW : Math.max(canvasW, 1);
 
     lines.push({
       text: line.text,

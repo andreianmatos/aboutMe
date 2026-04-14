@@ -1,7 +1,15 @@
-/* --- SCROLLBARS --- */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #e8e4db; }
-::-webkit-scrollbar-thumb { background: black; }
+/* Scrollbar invisível na home (evita saltos de largura / relayout Pretext quando aparecia). */
+body.page-home.cv-open,
+body.page-home.contact-open {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+body.page-home.cv-open::-webkit-scrollbar,
+body.page-home.contact-open::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
+}
 
 :root {
     /* Tipografia fluida: corpo único; escala com vw + vh */
@@ -52,8 +60,9 @@ body.page-home.contact-open {
     overflow-y: auto;
     height: auto;
     min-height: 100dvh;
-    /* Corpo é o scroll container; suave + relayout Pretext empilham jank */
     scroll-behavior: auto;
+    /* Largura estável: reserva gaveta mesmo sem barra visível (evita glitch ao mudar overflow). */
+    scrollbar-gutter: stable;
 }
 
 /* Rola com o body: ocupa da origem até ao fim do conteúdo em fluxo (.site-chrome). */
@@ -82,7 +91,7 @@ body.page-home.contact-open {
     top: 0;
     cursor: grab;
     opacity: 0;
-    transition: opacity 0.45s ease;
+    transition: opacity 0.55s cubic-bezier(0.33, 1, 0.68, 1);
     touch-action: none;
     will-change: transform;
     filter: drop-shadow(0 3px 14px rgba(0, 0, 0, 0.14));
@@ -329,6 +338,14 @@ body.contact-open #contact-inline-toggle,
     overflow: visible;
     margin-top: clamp(0.35rem, 1.5vh, 0.9rem);
     flex: 0 0 auto;
+}
+
+/* Fechar CV/Contact: fade primeiro (evita títulos a desaparecer por último no clip do max-height). */
+.contact-inline.pretext-cv.panel-fading-out,
+.cv-inline.pretext-cv.panel-fading-out {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease, max-height 0.55s ease-out;
 }
 
 .cv-pretext-birth-wrap {

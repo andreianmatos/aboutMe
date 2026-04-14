@@ -22,6 +22,18 @@ const WORK_FLOATS = [
     { path: 'main/items/writings.png', href: 'writings.html' },
 ];
 
+/** Recortes na raiz de `main/items/` (a pasta `no/` não entra nos floats). Acrescenta aqui ficheiros novos. */
+const ITEM_PIECE_FILES = [
+    '1.png',
+    '2.png',
+    '3.png',
+    '4.png',
+    '5.png',
+    '7.png',
+    '8.png',
+    '9.png',
+];
+
 function pageDirectoryPath() {
     let p = window.location.pathname;
     if (p.endsWith('/')) return p;
@@ -83,26 +95,166 @@ function notifyPretextDirty() {
     window.dispatchEvent(new Event('pretext-dirty'));
 }
 
+const PANEL_FADE_OUT_MS = 220;
+const PANEL_HEIGHT_FALLBACK_MS = 700;
+const cvCloseTimers = { fade: null, height: null };
+const contactCloseTimers = { fade: null, height: null };
+
+function clearCvCloseTimers() {
+    if (cvCloseTimers.fade) clearTimeout(cvCloseTimers.fade);
+    if (cvCloseTimers.height) clearTimeout(cvCloseTimers.height);
+    cvCloseTimers.fade = null;
+    cvCloseTimers.height = null;
+}
+
+function clearContactCloseTimers() {
+    if (contactCloseTimers.fade) clearTimeout(contactCloseTimers.fade);
+    if (contactCloseTimers.height) clearTimeout(contactCloseTimers.height);
+    contactCloseTimers.fade = null;
+    contactCloseTimers.height = null;
+}
+
+function prefersReducedMotion() {
+    return (
+        typeof window.matchMedia !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+}
+
 function setCvPanelOpen(open) {
     const panel = document.getElementById('cv-inline');
     if (!panel) return;
-    panel.classList.toggle('is-open', open);
-    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
-    document.body.classList.toggle('cv-open', open);
-    const btn = document.getElementById('cv-inline-toggle');
-    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    requestAnimationFrame(() => notifyPretextDirty());
+    clearCvCloseTimers();
+    if (open) {
+        panel.classList.remove('panel-fading-out');
+        panel.classList.add('is-open');
+        panel.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('cv-open');
+        const btn = document.getElementById('cv-inline-toggle');
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+        requestAnimationFrame(() => notifyPretextDirty());
+        return;
+    }
+    if (!panel.classList.contains('is-open')) return;
+    if (prefersReducedMotion()) {
+        panel.classList.remove('is-open', 'panel-fading-out');
+        panel.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('cv-open');
+        const btn = document.getElementById('cv-inline-toggle');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        requestAnimationFrame(() => notifyPretextDirty());
+        return;
+    }
+    let finished = false;
+    const finalize = () => {
+        if (finished) return;
+        finished = true;
+        clearCvCloseTimers();
+        panel.classList.remove('panel-fading-out');
+        panel.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('cv-open');
+        const btn = document.getElementById('cv-inline-toggle');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        requestAnimationFrame(() => notifyPretextDirty());
+    };
+
+    const onFadeEnd = (e) => {
+        if (e.target !== panel || e.propertyName !== 'opacity') return;
+        if (finished) return;
+        panel.removeEventListener('transitionend', onFadeEnd);
+        clearTimeout(cvCloseTimers.fade);
+        cvCloseTimers.fade = null;
+        if (!panel.classList.contains('is-open')) return;
+        panel.classList.remove('is-open');
+        const onHeightEnd = (ev) => {
+            if (ev.target !== panel || ev.propertyName !== 'max-height') return;
+            panel.removeEventListener('transitionend', onHeightEnd);
+            clearTimeout(cvCloseTimers.height);
+            cvCloseTimers.height = null;
+            finalize();
+        };
+        panel.addEventListener('transitionend', onHeightEnd);
+        cvCloseTimers.height = setTimeout(() => {
+            panel.removeEventListener('transitionend', onHeightEnd);
+            finalize();
+        }, PANEL_HEIGHT_FALLBACK_MS);
+    };
+
+    panel.addEventListener('transitionend', onFadeEnd);
+    panel.classList.add('panel-fading-out');
+    cvCloseTimers.fade = setTimeout(() => {
+        panel.removeEventListener('transitionend', onFadeEnd);
+        if (finished || !panel.classList.contains('panel-fading-out')) return;
+        onFadeEnd({ target: panel, propertyName: 'opacity' });
+    }, PANEL_FADE_OUT_MS + 140);
 }
 
 function setContactPanelOpen(open) {
     const panel = document.getElementById('contact-inline');
     if (!panel) return;
-    panel.classList.toggle('is-open', open);
-    panel.setAttribute('aria-hidden', open ? 'false' : 'true');
-    document.body.classList.toggle('contact-open', open);
-    const btn = document.getElementById('contact-inline-toggle');
-    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    requestAnimationFrame(() => notifyPretextDirty());
+    clearContactCloseTimers();
+    if (open) {
+        panel.classList.remove('panel-fading-out');
+        panel.classList.add('is-open');
+        panel.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('contact-open');
+        const btn = document.getElementById('contact-inline-toggle');
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+        requestAnimationFrame(() => notifyPretextDirty());
+        return;
+    }
+    if (!panel.classList.contains('is-open')) return;
+    if (prefersReducedMotion()) {
+        panel.classList.remove('is-open', 'panel-fading-out');
+        panel.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('contact-open');
+        const btn = document.getElementById('contact-inline-toggle');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        requestAnimationFrame(() => notifyPretextDirty());
+        return;
+    }
+    let finished = false;
+    const finalize = () => {
+        if (finished) return;
+        finished = true;
+        clearContactCloseTimers();
+        panel.classList.remove('panel-fading-out');
+        panel.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('contact-open');
+        const btn = document.getElementById('contact-inline-toggle');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        requestAnimationFrame(() => notifyPretextDirty());
+    };
+
+    const onFadeEnd = (e) => {
+        if (e.target !== panel || e.propertyName !== 'opacity') return;
+        if (finished) return;
+        panel.removeEventListener('transitionend', onFadeEnd);
+        clearTimeout(contactCloseTimers.fade);
+        contactCloseTimers.fade = null;
+        if (!panel.classList.contains('is-open')) return;
+        panel.classList.remove('is-open');
+        const onHeightEnd = (ev) => {
+            if (ev.target !== panel || ev.propertyName !== 'max-height') return;
+            panel.removeEventListener('transitionend', onHeightEnd);
+            clearTimeout(contactCloseTimers.height);
+            contactCloseTimers.height = null;
+            finalize();
+        };
+        panel.addEventListener('transitionend', onHeightEnd);
+        contactCloseTimers.height = setTimeout(() => {
+            panel.removeEventListener('transitionend', onHeightEnd);
+            finalize();
+        }, PANEL_HEIGHT_FALLBACK_MS);
+    };
+
+    panel.addEventListener('transitionend', onFadeEnd);
+    panel.classList.add('panel-fading-out');
+    contactCloseTimers.fade = setTimeout(() => {
+        panel.removeEventListener('transitionend', onFadeEnd);
+        if (finished || !panel.classList.contains('panel-fading-out')) return;
+        onFadeEnd({ target: panel, propertyName: 'opacity' });
+    }, PANEL_FADE_OUT_MS + 140);
 }
 
 /** Botão CV (Pretext) chama isto; definido cedo para o módulo poder usar. */
@@ -226,6 +378,8 @@ function createPieceElement(imgObj, parent, opts = {}) {
         vx: (Math.random() - 0.5) * 2 * CONFIG.drift.vMax,
         vy: (Math.random() - 0.5) * 2 * CONFIG.drift.vMax,
         isDragging: false,
+        /** Drift só depois de visível — evita saltos quando o fade-in atrasa. */
+        physicsReady: false,
         w,
         h,
         linkHref,
@@ -246,26 +400,34 @@ function createPieceElement(imgObj, parent, opts = {}) {
     return container;
 }
 
+function markItemPhysicsReady(el) {
+    const item = floatingItems.find((it) => it.el === el);
+    if (item) item.physicsReady = true;
+}
+
 async function initFloating() {
     const layer = document.getElementById('drawings-layer');
     if (!layer) return;
 
-    const ids = Array.from({ length: 10 }, (_, i) => i + 1);
-    const loaded = [];
-    for (const id of ids) {
-        const img = await loadAssetImage(`${CONFIG.paths.items}${id}.png`);
-        if (img) loaded.push(img);
-    }
+    const results = await Promise.all(
+        ITEM_PIECE_FILES.map((f) => loadAssetImage(`${CONFIG.paths.items}${f}`))
+    );
+    const loaded = results.filter(Boolean);
     loaded.sort(() => Math.random() - 0.5);
 
+    const staggerMs = isMobile() ? 0 : 48;
     loaded.forEach((img, index) => {
         createPieceElement(img, layer, {});
         const el = floatingItems[floatingItems.length - 1]?.el;
         if (!el) return;
-        if (isMobile()) {
+        const reveal = () => {
             el.classList.add('appeared');
+            markItemPhysicsReady(el);
+        };
+        if (staggerMs === 0) {
+            reveal();
         } else {
-            setTimeout(() => el.classList.add('appeared'), index * 80);
+            setTimeout(reveal, index * staggerMs);
         }
     });
 }
@@ -274,28 +436,45 @@ async function initWorkFloats() {
     const layer = document.getElementById('drawings-layer');
     if (!layer) return;
 
-    for (let index = 0; index < WORK_FLOATS.length; index++) {
-        const def = WORK_FLOATS[index];
-        const img = await loadAssetImage(def.path);
-        if (!img) continue;
+    const staggerMs = isMobile() ? 0 : 52;
+    const baseDelay = isMobile() ? 0 : 100;
+    const loaded = await Promise.all(
+        WORK_FLOATS.map(async (def) => {
+            const img = await loadAssetImage(def.path);
+            return img ? { img, def } : null;
+        })
+    );
+    loaded.forEach((entry, index) => {
+        if (!entry) return;
+        const { img, def } = entry;
         createPieceElement(img, layer, {
             extraClass: 'work-float',
             linkHref: def.href,
         });
         const el = floatingItems[floatingItems.length - 1]?.el;
-        if (!el) continue;
-        if (isMobile()) {
+        if (!el) return;
+        const reveal = () => {
             el.classList.add('appeared');
+            markItemPhysicsReady(el);
+        };
+        if (staggerMs === 0) {
+            reveal();
         } else {
-            setTimeout(() => el.classList.add('appeared'), 120 + index * 70);
+            setTimeout(reveal, baseDelay + index * staggerMs);
         }
-    }
+    });
 }
 
 function updatePhysics() {
     const bufferZone = 40;
 
     floatingItems.forEach((item) => {
+        if (!item.physicsReady) {
+            if (item.el?.style) {
+                item.el.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
+            }
+            return;
+        }
         if (!item.isDragging) {
             item.x += item.vx;
             item.y += item.vy;
